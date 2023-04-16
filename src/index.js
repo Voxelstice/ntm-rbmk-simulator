@@ -58,6 +58,7 @@ var btnFuncs = {
                 rbmk.stopSimulation()
                 btn.innerHTML = "Run"
             } else {
+                options.az5 = false
                 rbmk.stopSimulation() // This just resets properties to their defaults, again
                 options.simulating = true
                 btn.innerHTML = "Stop"
@@ -102,11 +103,20 @@ var btnFuncs = {
         })
     },
     ["az5"]: function(btn) {
-        rbmk.columns.forEach(column => {
-            if (column instanceof Control) {
-                column.targetLevel = 0
-            }
-        })
+        if (options.az5 == false) {
+            options.az5 = true
+
+            options.az5snd.volume = 0.4
+            options.az5snd.pause()
+            options.az5snd.currentTime = 0
+            options.az5snd.play()
+
+            rbmk.columns.forEach(column => {
+                if (column instanceof Control) {
+                    column.targetLevel = 0
+                }
+            })
+        }
     },
     ["boilerInputRate"]: function() {
         var res = prompt("Boiler input rate")
@@ -243,6 +253,7 @@ function button() {
 var options = {
     // RBMK itself
     az5: false,
+    az5snd: new Audio("https://github.com/HbmMods/Hbm-s-Nuclear-Tech-GIT/blob/master/src/main/resources/assets/hbm/sounds/block/shutdown.ogg?raw=true"),
     simulating: false,
     frames: 0,
 

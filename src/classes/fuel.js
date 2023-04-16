@@ -44,7 +44,7 @@ class RBMKFuel {
         this.column = null
 
         this.fullName = ""
-        this.reactivity = ""
+        this.reactivity = 0
         this.selfRate = 0
         this.function = EnumBurnFunc.LOG_TEN
         this.displayFunc = EnumBurnFunc2.LOG_TEN
@@ -56,7 +56,7 @@ class RBMKFuel {
         this.yieldd = 0
         this.defaultYield = 0
         this.meltingPoint = 1000
-        this.diffusion = 0.02
+        this.diffusion = 0.2
         this.nType = NType.SLOW
         this.rType = NType.FAST
 
@@ -151,14 +151,14 @@ class RBMKFuel {
         var enrichment = this.getEnrichment()
         if (enrichment < 1) {
             enrichment = this.reactivityModByEnrichment(enrichment)
-            var reactivity = `<span style="color: yellow;">${(this.reactivity * enrichment * 1000) / 1000}</span>`
-            var enrichmentPer = `<span style="color: gold;">${(enrichment * 1000) / 10}%</span>`
+            var reactivity = `<span style="color: yellow;">${((this.reactivity * enrichment * 1000) / 1000).toFixed(1)}</span>`
+            var enrichmentPer = `<span style="color: gold;">${((enrichment * 1000) / 10).toFixed(1)}%</span>`
 
-            return func.replaceAll("%1$s", this.selfRate > 0 ? `(x <span style="color: red;">+ ${this.selfRate}</span>)` : "x").replaceAll("%2$s", reactivity).concat(enrichmentPer)
+            return func.replaceAll("%1$s", this.selfRate > 0 ? `(x <span style="color: red;">+ ${this.selfRate.toFixed(1)}</span>)` : "x").replaceAll("%2$s", reactivity).concat(enrichmentPer)
         }
 
         
-        return func.replaceAll("%1$s", this.selfRate > 0 ? `(x <span style="color: red;">+ ${this.selfRate}</span>)` : "x").replaceAll("%2$s", this.reactivity)
+        return func.replaceAll("%1$s", this.selfRate > 0 ? `(x <span style="color: red;">+ ${this.selfRate.toFixed(1)}</span>)` : "x").replaceAll("%2$s", this.reactivity.toFixed(1))
     }
 
     // Actual functions used in simulation
@@ -213,7 +213,7 @@ class RBMKFuel {
             var coreHeat = this.coreHeat
             var avg = (heat + hullHeat + coreHeat) / 3
             this.coreHeat = avg
-            this.hullHeat = avg
+            this.skinHeat = avg
             return avg - heat
         }
 

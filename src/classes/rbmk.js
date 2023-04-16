@@ -11,18 +11,23 @@ class RBMK
         this.consoleImg.src = "assets/gui_rbmk_console.png"
 
         this.reaSim = false
+
+        this.expSound = new Audio("https://github.com/HbmMods/Hbm-s-Nuclear-Tech-GIT/blob/master/src/main/resources/assets/hbm/sounds/block/rbmk_explosion.ogg?raw=true")
     }
 
     update(ticks) {
         this.columns.forEach(column => {
             if (column != null) {
-                column.update2(ticks, this) // heat spread
                 column.update(ticks, this)
             }
         })
     }
 
     meltdown() {
+        this.expSound.volume = 0.4
+        this.expSound.pause()
+        this.expSound.currentTime = 0
+        this.expSound.play()
         options.simulating = false
         document.getElementById("explosionText").style.visibility = "visible"
     }

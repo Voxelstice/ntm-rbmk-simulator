@@ -56,7 +56,7 @@ class RBMKFuel {
         this.yieldd = 0
         this.defaultYield = 0
         this.meltingPoint = 1000
-        this.diffusion = 0.2
+        this.diffusion = 0.02
         this.nType = NType.SLOW
         this.rType = NType.FAST
 

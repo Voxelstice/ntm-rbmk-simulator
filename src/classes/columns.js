@@ -42,9 +42,7 @@ class Column
         ]
     }
 
-    update(ticks, rbmk) {}
-
-    update2(ticks, rbmk) {
+    update(ticks, rbmk) {
         this.moveHeat(rbmk)
         if (RBMKDials.dialReasimBoilers == true) {
             this.boilWater()
@@ -161,7 +159,7 @@ class Fuel extends Column
         this.display = new Display(1, this)
         this.display.draw2 = function(x, y, rbmk) {
             // Skin heat
-            var h = quickMath(this.column.skinHeat - 20, 10, this.column.maxSkinHeat)
+            var h = quickMath(this.column.skinHeat - 20, 8, this.column.maxSkinHeat)
             var h2 = quickMath(this.column.skinHeat - 20, 26, this.column.maxSkinHeat)
             rbmk.statsRenderer.draw("image", {
                 img: rbmk.consoleImg,
@@ -277,7 +275,7 @@ class Fuel extends Column
         }
 
         if (column instanceof Outgasser) {
-            // if rod can process
+            // if rod cant process
             // return flux
         }
 
@@ -319,7 +317,6 @@ class Fuel extends Column
     }
 
     // Other
-    update2(ticks) {}
     update(ticks, rbmk) {
         // Fuel stuff
         if (this.fuel.constructor.name == "NONE") {
@@ -330,7 +327,9 @@ class Fuel extends Column
 
             this.fluxFast = 0
             this.fluxSlow = 0
-        } if (this.fuel.constructor.name != "NONE") {
+            
+            super.update(ticks, rbmk)
+        } else if (this.fuel.constructor.name != "NONE") {
             this.depletion = this.fuel.calcDepletion()
             this.xenonPoison = this.fuel.xenon
             this.coreHeat = this.fuel.coreHeat
@@ -341,8 +340,10 @@ class Fuel extends Column
             var fluxOut = this.fuel.burn(fluxIn)
             var rType = this.fuel.rType
 
-            this.fuel.updateHeat(1)
-            this.heat += this.fuel.provideHeat(this.heat, 1)
+            this.fuel.updateHeat(1.0)
+            this.heat += this.fuel.provideHeat(this.heat, 1.0)
+
+            super.update(ticks, rbmk)
 
             if (this.heat > this.maxHeat && RBMKDials.dialDisableMeltdowns == false) {
                 rbmk.meltdown()
@@ -446,7 +447,7 @@ class Control extends Column
         this.targetLevel = 0
     }
 
-    update(ticks) {
+    update(ticks, rbmk) {
         this.lastLevel = this.level
 
         if (this.level < this.targetLevel) {
@@ -462,6 +463,8 @@ class Control extends Column
             if (this.level < this.targetLevel)
                 this.level = this.targetLevel
         }
+
+        super.update(ticks, rbmk)
     }
 
     draw(ticks) {
@@ -618,7 +621,7 @@ class Boiler extends Column
         this.producedPower = 0
     }
 
-    update(ticks) {
+    update(ticks, rbmk) {
         if (this.feedwater > this.feedwaterMax) 
             this.feedwater = this.feedwaterMax
 
@@ -657,6 +660,8 @@ class Boiler extends Column
 
             this.heat -= waterUsed * HEAT_PER_MB_WATER
         }
+
+        super.update(ticks, rbmk)
 
         // Steal steam from the boiler and put them through processing
         this.steam -= options.rbmkStuff.boilerOutputRate
@@ -828,6 +833,7 @@ class Cooler extends Column
             this.heat -= cooling
             this.cryo -= cooling
         }
+        super.update(ticks, rbmk)
     }
 
     draw(ticks) {

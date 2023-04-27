@@ -590,7 +590,7 @@ class ControlAuto extends Control
 {
     constructor() {
         super()
-	this.index = 3
+        this.index = 3
         this.tooltipText = "<b>CONTROL_AUTO</b>"
 
         this.function = 0

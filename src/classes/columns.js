@@ -220,6 +220,7 @@ class Fuel extends Column
         this.maxSkinHeat = 20
         this.depletion = 100
         this.xenonPoison = 0
+        this.radioactivity = 0
 
         this.fuel = new NONE()
         this.fuel.column = this
@@ -286,7 +287,7 @@ class Fuel extends Column
 		}*/
 
         if (column instanceof Control) {
-            var mult = column.level
+            var mult = column.mult
             if (mult == 0)
                 return 0
 
@@ -313,11 +314,21 @@ class Fuel extends Column
             return flux
         }
 
+        var limit = RBMKDials.dialColumnHeight
+		var hits = 0
+        for (let h = 0; h <= limit; h++) {
+            hits++
+        }
+		
+		if(hits > 0)
+            this.radioactivity += flux * 0.05 * hits / limit
+
         return 0
     }
 
     // Other
     update(ticks, rbmk) {
+        this.radioactivity = 0
         // Fuel stuff
         if (this.fuel.constructor.name == "NONE") {
             this.depletion = 100
@@ -384,6 +395,7 @@ class Fuel extends Column
         this.fluxSlow = 0
 
         this.xenonPoison = 0
+        this.radioactivity = 0
     }
 
     getConfig() {
@@ -394,7 +406,7 @@ class Fuel extends Column
 
         var stuff = document.createElement("div")
     
-        var fuelTooltip = `<b>${this.fuel.fullName}</b><br>${selfigniting}<p style="color: green; margin: 0px;">Depletion: ${this.fuel.calcDepletion().toFixed(3)}%</p><p style="color: purple; margin: 0px;">Xenon poison: ${(this.xenonPoison * 1000) / 1000}%</p><p style="color: blue; margin: 0px;">Splits with: ${this.fuel.nType}</p><p style="color: blue; margin: 0px;">Splits into: ${this.fuel.rType}</p><p style="color: yellow; margin: 0px;">Flux function: <span style="color: white;">${this.fuel.getFuncDescription()}</span></p><p style="color: yellow; margin: 0px;">Function type: ${this.fuel.displayFunc}</p><p style="color: yellow; margin: 0px;">Xenon gen function: <span style="color: white;">x * ${this.fuel.xGen}</span></p><p style="color: yellow; margin: 0px;">Xenon burn function: <span style="color: white;">x² * ${this.fuel.xBurn}</span></p><p style="color: gold; margin: 0px;">Heat per flux: ${this.fuel.heat}°C</p><p style="color: gold; margin: 0px;">Diffusion: ${this.fuel.diffusion}¹/²</p><p style="color: rgb(255, 63, 63); margin: 0px;">Skin temp: ${this.fuel.skinHeat.toFixed(1)}°C</p><p style="color: rgb(255, 63, 63); margin: 0px;">Core temp: ${this.fuel.coreHeat.toFixed(1)}°C</p><p style="color: red; margin: 0px;">Melting point: ${this.fuel.meltingPoint.toFixed(1)}°C</p>`
+        var fuelTooltip = `<b>${fuelNames[this.fuel.fullName].rod}</b><br><p style="color: grey; margin: 0px;">${fuelNames[this.fuel.fullName].fullName}</p>${selfigniting}<p style="color: green; margin: 0px;">Depletion: ${this.fuel.calcDepletion().toFixed(3)}%</p><p style="color: purple; margin: 0px;">Xenon poison: ${(this.xenonPoison * 1000) / 1000}%</p><p style="color: blue; margin: 0px;">Splits with: ${this.fuel.nType}</p><p style="color: blue; margin: 0px;">Splits into: ${this.fuel.rType}</p><p style="color: yellow; margin: 0px;">Flux function: <span style="color: white;">${this.fuel.getFuncDescription()}</span></p><p style="color: yellow; margin: 0px;">Function type: ${this.fuel.displayFunc}</p><p style="color: yellow; margin: 0px;">Xenon gen function: <span style="color: white;">x * ${this.fuel.xGen}</span></p><p style="color: yellow; margin: 0px;">Xenon burn function: <span style="color: white;">x² * ${this.fuel.xBurn}</span></p><p style="color: gold; margin: 0px;">Heat per flux: ${this.fuel.heat}°C</p><p style="color: gold; margin: 0px;">Diffusion: ${this.fuel.diffusion}¹/²</p><p style="color: rgb(255, 63, 63); margin: 0px;">Skin temp: ${this.fuel.skinHeat.toFixed(1)}°C</p><p style="color: rgb(255, 63, 63); margin: 0px;">Core temp: ${this.fuel.coreHeat.toFixed(1)}°C</p><p style="color: red; margin: 0px;">Melting point: ${this.fuel.meltingPoint.toFixed(1)}°C</p>`
         var element = document.createElement("p")
         element.className = "noMargin"
         element.style.fontSize = "27px"
@@ -414,6 +426,56 @@ class Fuel extends Column
         stuff.insertAdjacentElement("beforeend", elementt)
 
         return stuff
+    }
+}
+class FuelReaSim extends Fuel 
+{
+    constructor() {
+        super()
+        this.tooltipText = "<b>FUEL_REASIM</b>"
+    }
+
+    spreadFlux(type, fluxOut, rbmk) {
+        var range = RBMKDials.dialFluxRange
+        var count = RBMKDials.dialReasimCount
+        var dir = new Vec3(1, 0, 0);
+
+        for (let i = 0; i < count; i++) {
+            this.stream = type
+            var flux = fluxOut
+
+            dir.rotateAroundY(Math.PI * 2 * Math.random())
+                
+            for (let j = 1; j <= range; i++) {
+                var x = Math.floor(dir.xCoord * j)
+				var z = Math.floor(dir.zCoord * j)
+				var lastX = Math.floor(dir.xCoord * (j - 1))
+				var lastZ = Math.floor(dir.zCoord * (j - 1))
+				
+				//skip if the position is on the rod itself
+                console.log(x, z)
+				if(x == 0 && z == 0)
+					continue
+				
+				//skip if the current position is equal to the last position
+				if(x == lastX && z == lastZ)
+					continue
+                
+                flux = this.runInteraction(rbmk.columns[(this.x + x * i) + rbmk.width * (this.y + z * i)], flux)
+                rbmk.columns[(this.x + x * i) + rbmk.width * (this.y + z * i)] = new Blank()
+
+                if (flux <= 0)
+                    break
+            }
+        }
+    }
+
+    draw(ticks) {
+        var moderated = ""
+        if (this.moderated == true) {
+            moderated = `<p style="color: yellow; margin: 0px;">Moderated</p>`
+        }
+        this.tooltipText = `<b>FUEL_REASIM</b><br><p style="color: yellow; margin: 0px;">Column temperature: ${this.heat.toFixed(1)}°C</p><p style="color: green; margin: 0px;">Depletion: ${this.depletion.toFixed(3)}%</p><p style="color: purple; margin: 0px;">Xenon poison: ${this.xenonPoison.toFixed(1)}%</p><p style="color: red; margin: 0px;">Core temperature: ${this.coreHeat.toFixed(1)}°C</p><p style="color: rgb(255, 63, 63); margin: 0px;">Skin temperature: ${this.skinHeat.toFixed(1)}°C / ${this.maxSkinHeat.toFixed(1)}°C</p>${moderated}`
     }
 }
 class Control extends Column 
@@ -441,13 +503,16 @@ class Control extends Column
             })
         }
 
+        this.mult = 0
         this.level = 0
         this.lastLevel = 0
         this.speed = 0.00277
         this.targetLevel = 0
+        this.startingLevel = 0
     }
 
     update(ticks, rbmk) {
+        // Do stuff
         this.lastLevel = this.level
 
         if (this.level < this.targetLevel) {
@@ -463,6 +528,13 @@ class Control extends Column
             if (this.level < this.targetLevel)
                 this.level = this.targetLevel
         }
+
+        // Calculate mult and surge
+        var surge = 0
+        if (this.targetLevel < this.startingLevel && Math.abs(this.level - this.targetLevel) > 0.01) {
+            surge = Math.sin(Math.pow((1 - this.level), 15) * Math.PI) * (this.startingLevel - this.targetLevel) * RBMKDials.dialControlSurgeMod
+        }
+        this.mult = this.level + surge
 
         super.update(ticks, rbmk)
     }
@@ -503,32 +575,23 @@ class Control extends Column
         return stuff
     }
 }
-class ControlAuto extends Column 
+
+const ControlAutoFunctions = {
+    LINEAR: "LINEAR",
+    QUAD_UP: "QUAD_UP",
+    QUAD_DOWN: "QUAD_DOWN"
+}
+const InterpolationText = [
+    "Linear",
+    "Quadratic",
+    "Inverse Quadratic"
+]
+class ControlAuto extends Control 
 {
     constructor() {
-        super(3, {enabled: true, text: "<b>CONTROL_AUTO</b>"})
-        this.display = new Display(3, this)
-        this.display.draw2 = function(x, y, rbmk) {
-            // Rod Level
-            var h = quickMath(100-this.column.level, 8, 100)
-            var h2 = quickMath(100-this.column.level, 26, 100)
-            rbmk.statsRenderer.draw("image", {
-                img: rbmk.consoleImg,
-                crop: true,
-    
-                x: x*32+13,
-                y: y*32+3,
-                w: 6,
-                h: h2,
-    
-                sX: 34,
-                sY: 183,
-                sW: 2,
-                sH: h
-            })
-        }
+        super()
+        this.tooltipText = "<b>CONTROL_AUTO</b>"
 
-        this.level = 0
         this.function = 0
 
         this.heatLower = 0
@@ -537,12 +600,98 @@ class ControlAuto extends Column
         this.levelUpper = 0
     }
 
+    update() {
+        var fauxLevel = 0
+
+        var lowerBound = Math.min(this.heatLower, this.heatUpper)
+        var upperBound = Math.max(this.heatLower, this.heatUpper)
+
+        if (this.heat < lowerBound) {
+            fauxLevel = this.levelLower
+        } else if (this.heat > upperBound) {
+            fauxLevel = this.levelUpper
+        } else {
+            switch(ControlAutoFunctions[this.function]) {
+                case "LINEAR":
+                    fauxLevel = (this.heat - this.heatLower) * ((this.levelUpper - this.levelLower) / (this.heatUpper - this.heatLower)) + this.levelLower
+                    break
+                case "QUAD_UP":
+                    fauxLevel = Math.pow((this.heat - this.heatLower) / (this.heatUpper - this.heatLower), 2) * (this.levelUpper - this.levelLower) + this.levelLower
+                    break
+                case "QUAD_DOWN":
+                    fauxLevel = Math.pow((this.heat - this.heatUpper) / (this.heatLower - this.heatUpper), 2) * (this.levelLower - this.levelUpper) + this.levelUpper
+                    break
+            }
+        }
+
+        this.targetLevel = fauxLevel * 0.01
+        this.targetLevel = clamp(this.targetLevel, 0, 1)
+    }
+
     draw(ticks) {
         this.tooltipText = `<b>CONTROL_AUTO</b><br><p style="color: yellow; margin: 0px;">Column temperature: ${this.heat.toFixed(1)}°C</p><p style="color: yellow; margin: 0px;">${this.level}%</p>`
     }
 
     reset() {
         this.level = 0
+    }
+
+    getConfig() {
+        var stuff = document.createElement("div")
+
+        var elementt = document.createElement("button")
+        elementt.className = "textButton"
+        elementt.style.fontSize = "27px"
+        elementt.innerHTML = `Moderated: ${this.moderated}`
+        elementt.setAttribute("configmenuaction", "moderation")
+        elementt.setAttribute("onclick", `configMenuAction()`)
+        stuff.insertAdjacentElement("beforeend", elementt)
+
+        var elementt = document.createElement("button")
+        elementt.className = "textButton"
+        elementt.style.fontSize = "27px"
+        elementt.innerHTML = `Interpolation: ${InterpolationText[this.function]}`
+        elementt.setAttribute("configmenuaction", "cauto_interpolation")
+        elementt.setAttribute("onclick", `configMenuAction()`)
+        stuff.insertAdjacentElement("beforeend", elementt)
+
+        var elementt = document.createElement("button")
+        elementt.className = "textButton"
+        elementt.style.fontSize = "27px"
+        elementt.innerHTML = `Level at max heat: ${this.levelUpper}`
+        elementt.setAttribute("configmenuaction", "cauto_levelUpper")
+        elementt.setAttribute("tooltip", "Should be smaller than level at min heat")
+        elementt.setAttribute("onclick", `configMenuAction()`)
+        stuff.insertAdjacentElement("beforeend", elementt)
+
+        var elementt = document.createElement("button")
+        elementt.className = "textButton"
+        elementt.style.fontSize = "27px"
+        elementt.innerHTML = `Level at min heat: ${this.levelLower}`
+        elementt.setAttribute("configmenuaction", "cauto_levelLower")
+        elementt.setAttribute("tooltip", "Should be larger than level at min heat")
+        elementt.setAttribute("onclick", `configMenuAction()`)
+        stuff.insertAdjacentElement("beforeend", elementt)
+
+        var elementt = document.createElement("button")
+        elementt.className = "textButton"
+        elementt.style.fontSize = "27px"
+        elementt.innerHTML = `Max heat: ${this.heatUpper}`
+        elementt.setAttribute("configmenuaction", "cauto_heatUpper")
+        elementt.setAttribute("tooltip", "Must be larger than min heat")
+        elementt.setAttribute("onclick", `configMenuAction()`)
+        stuff.insertAdjacentElement("beforeend", elementt)
+
+        var elementt = document.createElement("button")
+        elementt.className = "textButton"
+        elementt.style.fontSize = "27px"
+        elementt.innerHTML = `Min heat: ${this.heatLower}`
+        elementt.setAttribute("configmenuaction", "cauto_heatLower")
+        elementt.setAttribute("tooltip", "Must be smaller than max heat")
+        elementt.setAttribute("onclick", `configMenuAction()`)
+        stuff.insertAdjacentElement("beforeend", elementt)
+
+        return stuff
     }
 }
 class Boiler extends Column 

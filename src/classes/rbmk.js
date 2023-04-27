@@ -32,6 +32,14 @@ class RBMK
         document.getElementById("explosionText").style.visibility = "visible"
     }
 
+    updateCanvasSize() {
+        this.renderer.canvasObj.width = rbmk.width*32
+        this.renderer.canvasObj.height = rbmk.height*32
+
+        this.statsRenderer.canvasObj.width = rbmk.width*32
+        this.statsRenderer.canvasObj.height = rbmk.height*32
+    }
+
     draw(ticks) {
         this.renderer.reset()
         this.statsRenderer.reset()

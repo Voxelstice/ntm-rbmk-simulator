@@ -3,6 +3,7 @@ var RBMKDials = {
     dialColumnHeatFlow: 0.2,
     dialDiffusionMod: 1,
     dialHeatProvision: 0.2,
+    dialColumnHeight: 4,
     dialBoilerHeatConsumption: 0.1,
     dialControlSpeed: 1,
     dialReactivityMod: 1,

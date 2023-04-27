@@ -20,9 +20,10 @@
         <div id="averageStats" style="z-index: 3; position: absolute; margin-left: 70%; width: 480px; height: 480px; margin-top: 0px;"></div>
         <p style="z-index: 3; position: absolute; margin-top: 25%; margin-left: 40%; text-align: center; width: 480px; height: 480px;"><br>The site's source code is public. <a href="https://github.com/Voxelstice/ntm-rbmk-simulator">GitHub</a><br>This simulator by default uses Large Turbines and Auxiliary Cooling Towers for the boilers.</p>
 
-        <button action="clear" onclick="button()" style="margin-top: 470px;">Clear</button>
+        <button action="new" onclick="button()" style="margin-top: 470px;">New</button>
         <button action="run" onclick="button()" style="margin-top: 470px;">Run</button>
         <button action="placeconfig" onclick="button()" style="margin-top: 470px;">Place</button>
+        <button action="changelog" onclick="button()" style="margin-top: 470px;">Changelog</button>
         <button class="showInDesign" action="export" tooltip="Exports current RBMK design to clipboard into JSON" onclick="button()" style="margin-top: 470px;">Export</button>
         <button class="showInDesign" action="import" onclick="button()" style="margin-top: 470px;">Import</button>
         <button class="showInSim" tooltip="Controls all controls rods in the reactor" action="pullcrs" onclick="button()" style="margin-top: 470px; display: none;">Control CRs</button>
@@ -48,5 +49,6 @@
     <script src="src/classes/rbmk.js"></script>
     <script src="src/classes/rbmkDials.js"></script>
     <script src="src/classes/renderer.js"></script>
+    <script src="src/classes/vector.js"></script>
     <script src="src/index.js"></script>
 </html>

@@ -48,9 +48,46 @@ document.body.addEventListener("mousemove", (e) => {
 
 /// BUTTON ///
 var btnFuncs = {
-    ["clear"]: function(btn) {
-        rbmk.columns = fillArray([], 15*15)
-        rbmk.columns[112] = new Blank()
+    ["new"]: function(btn) {
+        var option = confirm("Create new RBMK or just remove the columns while keeping the width and height?")
+        var res = prompt(`Are you sure? Type "rbmk" if you are really sure`)
+        if (res == "rbmk") {
+            if (option == true) {
+                // Ask
+                var width = prompt("RBMK width")
+                var height = prompt("RBMK height")
+
+                // Some math
+                width = Number.parseInt(width)
+                if (width < 1) {
+                    width = 1
+                }
+                if (isNaN(width) == true) {
+                    width = 15
+                }
+                height = Number.parseInt(height)
+                if (height < 1) {
+                    height = 1
+                }
+                if (isNaN(height) == true) {
+                    height = 15
+                }
+
+                console.log(width, height)
+
+                rbmk.width = Number.parseInt(width)
+                rbmk.height = Number.parseInt(height)
+
+                rbmk.columns = fillArray([], rbmk.width*rbmk.height)
+                rbmk.columns[Math.floor((rbmk.width*rbmk.height)/2)] = new Blank()
+
+            } else if (option == false) {
+                rbmk.columns = fillArray([], rbmk.width*rbmk.height)
+                rbmk.columns[Math.floor((rbmk.width*rbmk.height)/2)] = new Blank()
+            }
+
+            rbmk.updateCanvasSize()
+        }
     },
     ["run"]: function(btn) {
         if (options.simulating == false) {
@@ -78,6 +115,9 @@ var btnFuncs = {
             options.place.placing = false
             btn.innerHTML = "Config"
         }
+    },
+    ["changelog"]: function(btn) {
+        alert("At the moment im currently lazy to make a proper changelog page so here you go:\n\nv0.0.2a\n- Added rescaling for bigger RBMK designs (ui elements dont move upon rescaling yet)\n- RBMK fuels now have proper naming\n- Control rod criticality (surge)\n- This changelog button\n- Automatic control rods (not tested)\n- Radiation leak counter")
     },
     ["pullcrs"]: function(btn) {
         var res = prompt("Target level")
@@ -113,6 +153,7 @@ var btnFuncs = {
 
             rbmk.columns.forEach(column => {
                 if (column instanceof Control) {
+                    column.startingLevel = column.level
                     column.targetLevel = 0
                 }
             })
@@ -156,7 +197,7 @@ var btnFuncs = {
         if (options.simulating == true) {
             return alert("You can't export while simulating")
         }
-        var json = {"version": "rbmk_1", "data": [], "rbmk": {"rbmkdials": {}, "boilerInputRate": 0, "boilerOutputRate": 0}}
+        var json = {"version": "rbmk_2", "data": [], "rbmk": {"rbmkdials": {}, "boilerInputRate": 0, "boilerOutputRate": 0, "width": 15, "height": 15}}
 
         var index = 0
         rbmk.columns.forEach(column => {
@@ -206,7 +247,7 @@ var btnFuncs = {
                 return
             }
     
-            if (json.version != "rbmk_1") {
+            if (json.version != "rbmk_2") {
                 alert(`This data is not up-to-date (${json.version}), expect some issues`)
             }
     
@@ -232,8 +273,12 @@ var btnFuncs = {
                 RBMKDials[property] = json.rbmk.rbmkdials[property]
             }
     
-            rbmk.columns = fillArray([], 15*15)
+            rbmk.width = json.rbmk.width || 15
+            rbmk.height = json.rbmk.height || 15
+            rbmk.columns = fillArray([], rbmk.width*rbmk.height)
             rbmk.columns = rbmkColumnData
+
+            rbmk.updateCanvasSize()
         } catch (err) {
             alert(`Error occurred: ${err}`)
             console.trace(err)
@@ -275,14 +320,18 @@ var options = {
                 select: "fuel",
                 index: 1
             },
+            /*{
+                select: "fuelreasim",
+                index: 1
+            },*/
             {
                 select: "control",
                 index: 2
             },
-            /*{
+            {
                 select: "control_auto",
                 index: 3
-            },*/
+            },
             {
                 select: "boiler",
                 index: 4
@@ -361,6 +410,9 @@ var fuelDepletion = createScreen("Fuel Depletion", "0%")
 var xenonPoisonLevel = createScreen("Xenon Poisoning", "0%")
 var coreTempFuel = createScreen("Fuel Temp", "20°C")
 var powerProduced = createScreen("Power Produced", "0 HE")
+var rads = createScreen("Radiation Leaked", "0 RADs")
+
+rads.value.setAttribute("tooltip", "This does not count lids")
 
 averageStats.insertAdjacentElement("beforeend", averageColumnTemp.div)
 averageStats.insertAdjacentElement("beforeend", controlRodLevel.div)
@@ -368,6 +420,7 @@ averageStats.insertAdjacentElement("beforeend", fuelDepletion.div)
 averageStats.insertAdjacentElement("beforeend", xenonPoisonLevel.div)
 averageStats.insertAdjacentElement("beforeend", coreTempFuel.div)
 averageStats.insertAdjacentElement("beforeend", powerProduced.div)
+averageStats.insertAdjacentElement("beforeend", rads.div)
 
 // Loop
 setInterval(() => {
@@ -397,6 +450,7 @@ setInterval(() => {
     var xenonPoisons = []
     var coreTempFuels = []
     var powerProducedd = []
+    var radsLeaked = []
 
     // Get all variables
     rbmk.columns.forEach(column => {
@@ -410,6 +464,7 @@ setInterval(() => {
                 fuelDepletions.push(column.depletion)
                 xenonPoisons.push(column.xenonPoison)
                 coreTempFuels.push(column.coreHeat)
+                radsLeaked.push(column.radioactivity)
             }
             if (column instanceof Boiler) {
                 powerProducedd.push(column.producedPower)
@@ -425,6 +480,7 @@ setInterval(() => {
     coreTempFuel.value.innerHTML = `${averageCalc(coreTempFuels).toFixed(1)}°C`
     if (options.frames % 5 == 0) {
         powerProduced.value.innerHTML = `${averageCalc(powerProducedd).toFixed(1)} HE`
+        rads.value.innerHTML = `${Math.floor(averageCalc(radsLeaked))} RADs`
     }
 
     // Placement
@@ -582,6 +638,7 @@ function configMenuAction() {
             }
             num = num/100
 
+            col.startingLevel = col.level
             col.targetLevel = num
             break
         case "compression":
@@ -589,6 +646,81 @@ function configMenuAction() {
             if (col.steamType > 3) {
                 col.steamType = 0
             }
+            break
+
+        case "cauto_interpolation":
+            col.function++
+            if (col.function > 2) {
+                col.function = 0
+            }
+            break
+        case "cauto_levelUpper":
+            var res = prompt("")
+            // Do math
+            var num = Number.parseInt(res)
+            if (num < 0) {
+                num = 0
+            }
+            if (num > 100) {
+                num = 100
+            }
+            if (isNaN(num)) {
+                num = 0
+            }
+
+            col.levelUpper = num
+
+            break
+        case "cauto_levelLower":
+            var res = prompt("")
+            // Do math
+            var num = Number.parseInt(res)
+            if (num < 0) {
+                num = 0
+            }
+            if (num > 100) {
+                num = 100
+            }
+            if (isNaN(num)) {
+                num = 0
+            }
+
+            col.levelLower = num
+
+            break
+        case "cauto_heatUpper":
+            var res = prompt("")
+            // Do math
+            var num = Number.parseInt(res)
+            if (num < 0) {
+                num = 0
+            }
+            if (num > 9999) {
+                num = 9999
+            }
+            if (isNaN(num)) {
+                num = 0
+            }
+
+            col.heatUpper = num
+
+            break
+        case "cauto_heatLower":
+            var res = prompt("")
+            // Do math
+            var num = Number.parseInt(res)
+            if (num < 0) {
+                num = 0
+            }
+            if (num > 9999) {
+                num = 9999
+            }
+            if (isNaN(num)) {
+                num = 0
+            }
+
+            col.heatLower = num
+
             break
     }
 }
@@ -610,6 +742,8 @@ function getConstructor(block) {
             return new Blank()
         case "fuel":
             return new Fuel()
+        case "fuelreasim":
+            return new FuelReaSim()
         case "control":
             return new Control()
         case "control_auto":
@@ -641,8 +775,10 @@ document.body.addEventListener("click", function() {
     var rect = rbmk.renderer.canvas.canvas.getBoundingClientRect()
     var x = mPos[0]-rect.x
     var y = mPos[1]-rect.y
+    var mX = rbmk.width*32
+    var mY = rbmk.height*32
 
-    if (x >= 0 && x <= 480 && y >= 0 && y <= 480 && options.simulating == false && options.place.placing == true) {
+    if (x >= 0 && x <= mX && y >= 0 && y <= mY && options.simulating == false && options.place.placing == true) {
         rbmk.columns[Math.floor(x/32) + rbmk.width * Math.floor(y/32)] = getConstructor(options.place.selected)
         if (options.place.selected != "nothing") {
             rbmk.columns[Math.floor(x/32) + rbmk.width * Math.floor(y/32)].x = Math.floor(x/32)
@@ -650,10 +786,10 @@ document.body.addEventListener("click", function() {
         }
     }
 
-    if (x >= 0 && x <= 480 && y >= 0 && y <= 480 && options.simulating == false && options.place.placing == false) {
+    if (x >= 0 && x <= mX && y >= 0 && y <= mY && options.simulating == false && options.place.placing == false) {
         options.config.columnIndexSelected = Math.floor(x/32) + rbmk.width * Math.floor(y/32)
     }
-    if (x >= 0 && x <= 480 && y >= 0 && y <= 480 && options.simulating == true) {
+    if (x >= 0 && x <= mX && y >= 0 && y <= mY && options.simulating == true) {
         options.config.columnIndexSelected = Math.floor(x/32) + rbmk.width * Math.floor(y/32)
     }
 
@@ -696,7 +832,7 @@ fuels.forEach(fuel => {
 
     element.setAttribute("onclick", "fuelClick()")
     element.setAttribute("fuelname", index)
-    element.setAttribute("tooltip", `<b>${test.fullName}</b><br>${selfigniting}<p style="color: blue; margin: 0px;">Splits with: ${test.nType}</p><p style="color: blue; margin: 0px;">Splits into: ${test.rType}</p><p style="color: yellow; margin: 0px;">Flux function: <span style="color: white;">${test.getFuncDescription()}</span></p><p style="color: yellow; margin: 0px;">Function type: ${test.displayFunc}</p><p style="color: yellow; margin: 0px;">Xenon gen function: <span style="color: white;">x * ${test.xGen}</span></p><p style="color: yellow; margin: 0px;">Xenon burn function: <span style="color: white;">x² * ${test.xBurn}</span></p><p style="color: gold; margin: 0px;">Heat per flux: ${test.heat}°C</p><p style="color: gold; margin: 0px;">Diffusion: ${test.diffusion}¹/²</p><p style="color: red; margin: 0px;">Melting point: ${test.meltingPoint}°C</p>`)
+    element.setAttribute("tooltip", `<b>${fuelNames[test.fullName].rod}</b><br><p style="color: grey; margin: 0px;">${fuelNames[test.fullName].fullName}</p>${selfigniting}<p style="color: blue; margin: 0px;">Splits with: ${test.nType}</p><p style="color: blue; margin: 0px;">Splits into: ${test.rType}</p><p style="color: yellow; margin: 0px;">Flux function: <span style="color: white;">${test.getFuncDescription()}</span></p><p style="color: yellow; margin: 0px;">Function type: ${test.displayFunc}</p><p style="color: yellow; margin: 0px;">Xenon gen function: <span style="color: white;">x * ${test.xGen}</span></p><p style="color: yellow; margin: 0px;">Xenon burn function: <span style="color: white;">x² * ${test.xBurn}</span></p><p style="color: gold; margin: 0px;">Heat per flux: ${test.heat}°C</p><p style="color: gold; margin: 0px;">Diffusion: ${test.diffusion}¹/²</p><p style="color: red; margin: 0px;">Melting point: ${test.meltingPoint}°C</p>`)
     document.getElementById("fuels").appendChild(element)
     index++
 })

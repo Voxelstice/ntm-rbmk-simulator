@@ -1,6 +1,7 @@
 class Renderer
 {
     constructor(canvas) {
+        this.canvasObj = canvas
         this.canvas = canvas.getContext("2d")
         this.canvas.imageSmoothingEnabled = false
     }
@@ -32,6 +33,7 @@ class Renderer
     }
 
     reset() {
+        this.canvas.imageSmoothingEnabled = false
         this.canvas.clearRect(0, 0, this.canvas.canvas.width, this.canvas.canvas.height);
     }
 }

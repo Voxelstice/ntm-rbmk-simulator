@@ -9,6 +9,24 @@
     </head>
 
     <body>
+        <div id="changelog" class="hide">
+            <h2 style="margin-top: 2px;/*! margin-right: 2px; */">v0.0.2b</h2>
+            <h5 style="margin-top: -16px;color: #808080;margin-bottom: 14px;">Hey guys look i added changelog - 19/07/2023</h5><hr style="/*! margin-top: auto; */">
+            <div id="innerChangelog" style="height: 130px;overflow-y:auto">
+                Nothing has changed since the last release other than this changelog UI.<br>
+                Consider also checking <a href="https://voxelstice.github.io/ntm-zirnox-simulator">NTM ZIRNOX Simulator.</a><br>
+                Other than that, here's the v0.0.2a changelog:<br><br>
+
+                • Added rescaling for bigger RBMK designs (ui elements dont move upon rescaling yet)<br>
+                • RBMK fuels now have proper naming <br>
+                • Control rod criticality (surge)<br>
+                • This changelog button<br>
+                • Automatic control rods (not tested)<br>
+                • Radiation leak counter
+            </div><hr>
+            <button onclick="document.getElementById('changelog').className = 'hide'" style="margin-top: 4px;">Close</button>
+        </div>
+
         <p style="position: absolute; margin: 0px;">Welcome to NTM RBMK Simulator.<br>This site is meant to simulate the mechanics<br>of NTM's RBMK in a browser.<br><br>If you are unfamiliar with NTM's RBMKs, <a href="https://ntm.fandom.com/wiki/RBMK">check out the wiki page.</a><br>Building a RBMK is not that easy, you need to think carefully.</p>
         <p style="position: absolute; margin: 0px; margin-top: 160px;">To start placing, click on any existing block and<br>click on any tile.</p>
 

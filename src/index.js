@@ -117,7 +117,7 @@ var btnFuncs = {
         }
     },
     ["changelog"]: function(btn) {
-        alert("At the moment im currently lazy to make a proper changelog page so here you go:\n\nv0.0.2a\n- Added rescaling for bigger RBMK designs (ui elements dont move upon rescaling yet)\n- RBMK fuels now have proper naming\n- Control rod criticality (surge)\n- This changelog button\n- Automatic control rods (not tested)\n- Radiation leak counter")
+	document.getElementById('changelog').className = 'changelog'    
     },
     ["pullcrs"]: function(btn) {
         var res = prompt("Target level")

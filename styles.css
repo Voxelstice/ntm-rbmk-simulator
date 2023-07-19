@@ -1,5 +1,6 @@
 * {
     font-family: monospace;
+    color: white;
 }
 
 body {
@@ -82,4 +83,22 @@ a:hover {
 .textButton:hover {
     color: rgb(0, 127, 255);
     cursor: pointer;
+}
+
+/* sorry notsu i stole your changelog thing */
+.changelog {
+    width: 400px; height: 250px; position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0, 0, 0, 0.8);
+    border-style: solid;
+    border-color: rgb(69, 69, 69);
+    padding: 8px;
+    z-index: 9;
+}
+
+.hide {
+    display: none
 }

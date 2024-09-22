@@ -601,7 +601,7 @@ class ControlAuto extends Control
         this.levelUpper = 0
     }
 
-    update() {
+    update(ticks, rbmk) {
         var fauxLevel = 0
 
         var lowerBound = Math.min(this.heatLower, this.heatUpper)
@@ -627,6 +627,8 @@ class ControlAuto extends Control
 
         this.targetLevel = fauxLevel * 0.01
         this.targetLevel = clamp(this.targetLevel, 0, 1)
+
+	super.update(ticks, rbmk)
     }
 
     draw(ticks) {

@@ -1,3 +1,6 @@
+# This branch is the C++ version. Currently, it is in development and there's no public releases (yet).
+## If you want the old web version's source, it's in the ``legacy-web`` branch
+
 https://user-images.githubusercontent.com/95834462/232299688-6c226a18-be63-48d7-a1fd-4726f2e51d6e.mp4
 
 <i>[Reactor design](https://www.youtube.com/watch?v=vVcfi4Mj3Eo)</i>

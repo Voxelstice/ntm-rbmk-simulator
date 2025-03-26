@@ -1,3 +1,5 @@
+# This version has been deprecated. A new C++ version is currently in the works! Check out the ``main`` branch.
+
 https://user-images.githubusercontent.com/95834462/232299688-6c226a18-be63-48d7-a1fd-4726f2e51d6e.mp4
 
 <i>[Reactor design](https://www.youtube.com/watch?v=vVcfi4Mj3Eo)</i>

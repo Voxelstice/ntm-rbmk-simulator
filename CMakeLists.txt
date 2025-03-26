@@ -9,6 +9,7 @@ file(COPY ${CMAKE_SOURCE_DIR}/assets/ DESTINATION ${CMAKE_BINARY_DIR}/assets/)
 set(MAIN_SOURCE
     src/main.cpp
     src/logger.cpp
+    src/mathHelper.cpp
 
     # libs
         src/libs/backward.cpp
@@ -16,13 +17,17 @@ set(MAIN_SOURCE
     # classes
         src/classes/controlPanel.cpp
         src/classes/rbmk.cpp
+        src/classes/dials.cpp
 
         # columns
-            src/classes/columns/column.cpp
+            src/classes/columns/columnBase.cpp
+            src/classes/columns/columnBlank.cpp
+            src/classes/columns/columnFuelRod.cpp
 )
 set(MAIN_HEADERS
     src/main.h
     src/logger.h
+    src/mathHelper.h
 
     # libs
         src/libs/json.hpp
@@ -31,9 +36,12 @@ set(MAIN_HEADERS
     # classes
         src/classes/controlPanel.h
         src/classes/rbmk.h
+        src/classes/dials.h
 
         # columns
-            src/classes/columns/column.h
+            src/classes/columns/columnBase.h
+            src/classes/columns/columnBlank.h
+            src/classes/columns/columnFuelRod.h
 )
 
 add_executable(${PROJECT_NAME} ${MAIN_HEADERS} ${MAIN_SOURCE})

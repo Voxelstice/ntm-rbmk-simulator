@@ -12,6 +12,9 @@
 #include "classes/rbmk.h"
 #include "classes/controlPanel.h"
 
+RBMK *rbmk;
+ControlPanel *controlPanel;
+
 int main() {
     // Initialization
     Logger_init();
@@ -28,8 +31,8 @@ int main() {
 
     //----------------------------------------------------------------------------------
 
-    RBMK* rbmk = new RBMK();
-    ControlPanel* controlPanel = new ControlPanel(rbmk);
+    rbmk = new RBMK();
+    controlPanel = new ControlPanel(rbmk);
 
     //----------------------------------------------------------------------------------
 
@@ -37,6 +40,9 @@ int main() {
         // Update
         rbmk->update();
         controlPanel->update();
+
+        if (IsKeyPressed(KEY_Z)) rbmk->changeState(RUNNING);
+        if (IsKeyPressed(KEY_X)) rbmk->changeState(OFFLINE);
 
         //----------------------------------------------------------------------------------
 

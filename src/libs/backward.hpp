@@ -4483,10 +4483,10 @@ private:
 
     Logger_writeToLog("\nAn unhandled exception has been detected. The stacktrace will be printed below:\n");
     Logger_writeToLog(message.c_str());
-    Logger_writeToLog("Please make a GitHub issue (https://www.github.com/voxelstice/photonstar/issues/) and send the latest log file from the logs folder in the same place as the executable!!!!\n");
+    Logger_writeToLog("Please make a GitHub issue (https://www.github.com/voxelstice/ntm-rbmk-simulator/issues/) and send the latest log file from the logs folder in the same place as the executable!!!!\n");
     Logger_writeToLog("If the stacktrace does NOT show any line numbers, this stacktrace is *USELESS* and you must provide reproduction steps.\n");
 
-    message = message + "\n\nPlease make a GitHub issue with the log file in the logs folder!!!\nhttps://www.github.com/voxelstice/photonstar/issues/\nIf the stacktrace does not show code lines, the stacktrace is *USELESS* and the only way i will be able to figure this out is if you give me reproduction steps for this issue.";
+    message = message + "\n\nPlease make a GitHub issue with the log file in the logs folder!!!\nhttps://www.github.com/voxelstice/ntm-rbmk-simulator/issues/\nIf the stacktrace does not show code lines, the stacktrace is *USELESS* and the only way i will be able to figure this out is if you give me reproduction steps for this issue.";
 
     int len = MultiByteToWideChar(CP_UTF8, 0, message.c_str(), -1, NULL, 0);
     wchar_t* wmessage = new wchar_t[len];

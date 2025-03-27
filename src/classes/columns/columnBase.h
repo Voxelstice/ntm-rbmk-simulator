@@ -3,6 +3,7 @@
 #include "raylib.h"
 
 #include <vector>
+#include <string>
 
 enum ColumnType {
     COLUMN_NONE = -1,
@@ -32,6 +33,8 @@ class ColumnBase {
 
         void baseInit();
         virtual void init();
+
+        virtual std::vector<std::string> getInfo();
 
         void moveHeat();
         void boilWater();

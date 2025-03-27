@@ -4,10 +4,11 @@
 #include <vector>
 #include <cmath>
 
-#include "rbmk.h"
-#include "../main.h"
-
 #include "dials.h"
+#include "rbmk.h"
+
+#include "../main.h"
+#include "../tooltip.h"
 
 // THE COLUMN HORDE
 #include "columns/columnBlank.h"
@@ -100,6 +101,21 @@ void RBMK::draw() {
             float heatAlpha = Clamp((float) ((column->heat-20.0) / column->maxHeat), 0.0f, 1.0f);
             float heatY = std::round(10.0f * heatAlpha);
             controlPanel->drawTex(controlPanel->ui, {0, 182+columnSize.x-heatY}, {10, heatY}, Vector2Add(destPos, {0, columnSize.y-heatY}), {10, heatY}, 4);
+
+            if (state != OFFLINE && indexFromPos(rbmkBuilder->getSelectedPosition()) == i) {
+                std::string tooltipData = "";
+                tooltipData += rbmkBuilder->getStringFromType(column->type);
+                tooltipData += "\n";
+                tooltipData += "Column Temperature: " + std::string(TextFormat("%.1f", column->heat)) + " C";
+
+                std::vector<std::string> info = column->getInfo();
+                for (std::string str : info) {
+                    tooltipData += "\n";
+                    tooltipData += str;
+                }
+                
+                SetTooltip(tooltipData.c_str());
+            }
         }
     }
 }
@@ -125,7 +141,11 @@ void RBMK::changeState(RBMKState newState) {
     if (newState == RUNNING) {
         for (int i = 0; i < 15*15; i++) {
             if (columns[i]->active == false) continue;
-            
+            if (columns[i]->type == COLUMN_NONE) {
+                columns[i]->active = false;
+                continue;
+            }
+
             columns[i]->baseInit();
             columns[i]->init();
         }

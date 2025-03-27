@@ -18,11 +18,11 @@ enum EnumBurnFunc {
     BURNFUNC_EXPERIMENTAL = 8
 };
 enum EnumDepleteFunc {
-    DEPFUNC_LINEAR = 0, 		//old function
-    DEPFUNC_RAISING_SLOPE = 1,	//for breeding fuels such as MEU, maximum of 110% at 28% depletion
-    DEPFUNC_BOOSTED_SLOPE = 2,	//for strong breeding fuels such Th232, maximum of 132% at 64% depletion
-    DEPFUNC_GENTLE_SLOPE = 3,	//recommended for most fuels, maximum barely over the start, near the beginning
-    DEPFUNC_STATIC = 4			//for arcade-style neutron sources
+    DEPFUNC_LINEAR = 0,
+    DEPFUNC_RAISING_SLOPE = 1,
+    DEPFUNC_BOOSTED_SLOPE = 2,
+    DEPFUNC_GENTLE_SLOPE = 3,
+    DEPFUNC_STATIC = 4
 };
 
 // There is likely a better way to do this but im probably not going to

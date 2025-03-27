@@ -20,6 +20,8 @@ ColumnFuelRod::ColumnFuelRod() {
 }
 
 void ColumnFuelRod::init() {
+    fuel = PrepareFuel("rbmk_fuel_ueu");
+
     hasRod = fuel->active;
     if (hasRod == true) {
         fuel->reset();
@@ -110,4 +112,16 @@ double ColumnFuelRod::fluxFromType(NType type) {
 
 void ColumnFuelRod::spreadFlux(double flux, double ratio) {
 
+}
+
+std::vector<std::string> ColumnFuelRod::getInfo() {
+    std::vector<std::string> vector;
+
+    if (hasRod == true) {
+        vector.push_back("Depletion: " + std::string(TextFormat("%.3f", (1.0-fuel->getEnrichment())*100.0)) + "%");
+        vector.push_back("Xenon poison: " + std::string(TextFormat("%.3f", fuel->getPoisonLevel())) + "%");
+        vector.push_back("Core temperature: " + std::string(TextFormat("%.1f", fuel->itemCoreHeat)) + " C");
+        vector.push_back("Skin temperature: " + std::string(TextFormat("%.1f", fuel->itemHullHeat)) + " C");
+    }
+    return vector;
 }

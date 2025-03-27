@@ -114,3 +114,9 @@ void ColumnBase::init() { }
 void ColumnBase::update() { }
 void ColumnBase::draw(Vector2 columnSize, Vector2 destPos) { }
 void ColumnBase::reset() { }
+
+std::vector<std::string> ColumnBase::getInfo() {
+    std::vector<std::string> vector;
+    vector.clear();
+    return vector;
+}

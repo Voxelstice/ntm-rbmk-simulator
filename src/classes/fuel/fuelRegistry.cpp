@@ -17,7 +17,7 @@ void RegisterFuels() {
     RBMKFuelRod* rbmk_fuel_ueu = new RBMKFuelRod("Unenriched Uranium");
     rbmk_fuel_ueu
         ->setYield(100000000)
-        ->setStats(15)
+        ->setStats(15, 20) // ueu is not self-igniting ingame, i just gave it a self rate for testing reasons
         ->setFunction(BURNFUNC_LOG_TEN)
         ->setDepletionFunction(DEPFUNC_RAISING_SLOPE)
         ->setHeat(0.65)

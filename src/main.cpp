@@ -1,13 +1,8 @@
 #include "raylib.h"
 
-/*#define RAYGUI_IMPLEMENTATION
-#include "libs/raygui.h"
-
-// Dear ImGui
-#include "imgui/imgui.h"
-#include "libs/rlImGui.h"*/
-
+#include "text.h"
 #include "logger.h"
+#include "tooltip.h"
 
 #include "classes/dials.h"
 #include "classes/rbmk.h"
@@ -48,6 +43,7 @@ int main() {
     controlPanel = new ControlPanel(rbmk);
 
     RegisterFuels();
+    TextLoad();
 
     //----------------------------------------------------------------------------------
 
@@ -81,6 +77,8 @@ int main() {
             controlPanel->draw();
             rbmk->draw();
             rbmkBuilder->draw();
+
+            DrawTooltip();
         EndDrawing();
         //----------------------------------------------------------------------------------
     }
@@ -90,7 +88,9 @@ int main() {
 
     // De-Initialization
     //--------------------------------------------------------------------------------------
-    CloseAudioDevice();
+    TextUnload();
+
+    if (IsAudioDeviceReady()) CloseAudioDevice();
     CloseWindow();
     //--------------------------------------------------------------------------------------
 

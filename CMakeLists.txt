@@ -8,7 +8,9 @@ file(COPY ${CMAKE_SOURCE_DIR}/assets/ DESTINATION ${CMAKE_BINARY_DIR}/assets/)
 # Set source files
 set(MAIN_SOURCE
     src/main.cpp
+    src/text.cpp
     src/logger.cpp
+    src/tooltip.cpp
     src/mathHelper.cpp
 
     # libs
@@ -46,7 +48,9 @@ set(MAIN_SOURCE
 )
 set(MAIN_HEADERS
     src/main.h
+    src/text.h
     src/logger.h
+    src/tooltip.h
     src/mathHelper.h
 
     # libs
@@ -90,7 +94,7 @@ add_executable(${PROJECT_NAME} ${MAIN_HEADERS} ${MAIN_SOURCE})
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # Install raylib
-set(RAYLIB_VERSION 5.0)
+set(RAYLIB_VERSION 5.5)
 find_package(raylib ${RAYLIB_VERSION} QUIET)
 if (NOT raylib_FOUND)
     include(FetchContent)

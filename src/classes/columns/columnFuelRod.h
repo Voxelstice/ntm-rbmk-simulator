@@ -22,6 +22,8 @@ class ColumnFuelRod : public ColumnFluxReceiver {
 
         void spreadFlux(double flux, double ratio);
 
+        std::vector<std::string> getInfo();
+
         double fluxFastRatio = 0.0;
         double fluxQuantity = 0.0;
         double lastFluxQuantity = 0.0;

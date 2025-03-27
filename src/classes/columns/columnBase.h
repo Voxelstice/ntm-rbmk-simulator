@@ -26,15 +26,18 @@ class ColumnBase {
     public:
         ColumnBase();
 
+        void baseUpdate();
         virtual void update();
         virtual void draw(Vector2 columnSize, Vector2 destPos);
 
+        void baseInit();
         virtual void init();
 
         void moveHeat();
         void boilWater();
         void coolPassively();
 
+        void baseReset();
         virtual void reset();
 
         // its so tempting to use floats...

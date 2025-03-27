@@ -5,8 +5,8 @@
 #include <cmath>
 
 #include "rbmkBuilder.h"
+#include "dials.h"
 #include "../mathHelper.h"
-using namespace MathHelper;
 
 #include "../main.h"
 
@@ -26,22 +26,23 @@ Vector2 RBMKBuilder::getSelectedPosition() {
 }
 ColumnType RBMKBuilder::getTypeFromIndex() {
     // has to be hardcoded :(
+    // atleast we make it look nice
 
     // ROW 1
-    if (columnIndex == 0) return COLUMN_BLANK;
-    else if (columnIndex == 1) return COLUMN_FUEL;
-    else if (columnIndex == 2) return COLUMN_CONTROL;
-    else if (columnIndex == 3) return COLUMN_CONTROL_AUTO;
+         if (columnIndex == 0)  return COLUMN_BLANK;
+    else if (columnIndex == 1)  return COLUMN_FUEL;
+    else if (columnIndex == 2)  return COLUMN_CONTROL;
+    else if (columnIndex == 3)  return COLUMN_CONTROL_AUTO;
 
     // ROW 2
-    else if (columnIndex == 4) return COLUMN_BOILER;
-    else if (columnIndex == 5) return COLUMN_MODERATOR;
-    else if (columnIndex == 6) return COLUMN_ABSORBER;
-    else if (columnIndex == 7) return COLUMN_REFLECTOR;
+    else if (columnIndex == 4)  return COLUMN_BOILER;
+    else if (columnIndex == 5)  return COLUMN_MODERATOR;
+    else if (columnIndex == 6)  return COLUMN_ABSORBER;
+    else if (columnIndex == 7)  return COLUMN_REFLECTOR;
 
     // ROW 3
-    else if (columnIndex == 8) return COLUMN_OUTGASSER;
-    else if (columnIndex == 9) return COLUMN_STORAGE;
+    else if (columnIndex == 8)  return COLUMN_OUTGASSER;
+    else if (columnIndex == 9)  return COLUMN_STORAGE;
     else if (columnIndex == 10) return COLUMN_COOLER;
     else if (columnIndex == 11) return COLUMN_HEATEX;
 
@@ -52,31 +53,34 @@ ColumnType RBMKBuilder::getTypeFromIndex() {
 }
 
 void RBMKBuilder::update() {
+    if (rbmkDials.varsEmbedded == true) {
+        return;
+    }
+
     for (int y = 0; y < 4; y++) {
         for (int x = 0; x < 4; x++) {
             int i = y * 4 + x;
-            Rectangle rect = {
-                (244+10+(10*(float)x))*4, (11+(10*(float)y))*4,
-                40, 40
-            };
+            Rectangle rect = { (244+10+(10*(float)x))*4, (11+(10*(float)y))*4, 40, 40 };
 
-            if (CheckCollisionPointRec(GetMousePosition(), rect) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-                columnIndex = i;
-            }
+            if (CheckCollisionPointRec(GetMousePosition(), rect) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) columnIndex = i;
         }
     }
 
     Vector2 rbmkPos = getSelectedPosition();
-    if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && isMouseWithinGrid()) {
+    if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && isMouseWithinGrid() && rbmk->state == OFFLINE) {
         rbmk->placeColumn(rbmkPos, rbmk->makeColumnFromType(getTypeFromIndex()));
     }
 }
 void RBMKBuilder::draw() {
+    if (rbmkDials.varsEmbedded == true) {
+        return;
+    }
+
     controlPanel->drawTex(ui, {0, 0}, {60, 172}, {244, 0}, {60, 172}, 4);
 
     // draw selection
     Vector2 pos = Vector2Multiply(getSelectedPosition(), {10, 10});
-    if (isMouseWithinGrid())
+    if (isMouseWithinGrid() && rbmk->state == OFFLINE)
         controlPanel->drawTex(controlPanel->ui, {0, 192}, {10, 10}, Vector2Add(rbmk->columnGridPosition, pos), {10, 10}, 4);
 
     // that ui

@@ -1,10 +1,11 @@
+// https://github.com/HbmMods/Hbm-s-Nuclear-Tech-GIT/blob/master/src/main/java/com/hbm/tileentity/machine/rbmk/TileEntityRBMKBase.java
+
 #include "raylib.h"
 #include "raymath.h"
 
 #include <cmath>
 
 #include "../../mathHelper.h"
-using namespace MathHelper;
 
 #include "columnBase.h"
 #include "../dials.h"
@@ -14,21 +15,7 @@ ColumnBase::ColumnBase() {
     neighbors.clear();
 }
 
-void ColumnBase::update() {
-    if (rbmk->state == RUNNING && active == true) {
-        moveHeat();
-
-        if (rbmkDials.dialReasimBoilers == true)
-            boilWater();
-
-        coolPassively();
-    }
-}
-void ColumnBase::draw(Vector2 columnSize, Vector2 destPos) {
-
-}
-
-void ColumnBase::init() {
+void ColumnBase::baseInit() {
     // this just gets neighbors
     neighbors.clear();
 
@@ -41,6 +28,21 @@ void ColumnBase::init() {
             neighbors.push_back(base);
         }
     }
+}
+
+void ColumnBase::baseUpdate() {
+    moveHeat();
+
+    if (rbmkDials.dialReasimBoilers == true)
+        boilWater();
+
+    coolPassively();
+}
+
+void ColumnBase::baseReset() {
+    heat = 20.0;
+    water = 0;
+    steam = 0;
 }
 
 // main stuff
@@ -61,6 +63,9 @@ void ColumnBase::boilWater() {
     heat -= processedWater * heatConsumption;
 }
 void ColumnBase::moveHeat() {
+    if (heat == 20.0 && rbmkDials.dialReasimBoilers == true)
+        return;
+
     double heatTot = heat;
     int waterTot = water;
     int steamTot = steam;
@@ -86,12 +91,12 @@ void ColumnBase::moveHeat() {
         int tSteam = steamTot / members;
         int rSteam = steamTot % members;
 
-        for (ColumnBase* rbmk : rec) {
-            double delta = targetHeat - rbmk->heat;
-            rbmk->heat += delta * stepSize;
+        for (ColumnBase* base : rec) {
+            double delta = targetHeat - base->heat;
+            base->heat += delta * stepSize;
 
-            rbmk->water = tWater;
-            rbmk->steam = tSteam;
+            base->water = tWater;
+            base->steam = tSteam;
         }
 
         water += rWater;
@@ -104,8 +109,8 @@ void ColumnBase::coolPassively() {
     if (heat < 20.0) heat = 20.0;
 }
 
-void ColumnBase::reset() {
-    heat = 20.0;
-    water = 0;
-    steam = 0;
-}
+// virtual
+void ColumnBase::init() { }
+void ColumnBase::update() { }
+void ColumnBase::draw(Vector2 columnSize, Vector2 destPos) { }
+void ColumnBase::reset() { }

@@ -14,6 +14,8 @@
 #include "classes/rbmkBuilder.h"
 #include "classes/controlPanel.h"
 
+#include "classes/fuel/fuelRegistry.h"
+
 RBMK* rbmk;
 RBMKBuilder* rbmkBuilder;
 ControlPanel* controlPanel;
@@ -45,11 +47,25 @@ int main() {
     rbmkBuilder = new RBMKBuilder();
     controlPanel = new ControlPanel(rbmk);
 
+    RegisterFuels();
+
     //----------------------------------------------------------------------------------
+
+    // internal tick mechanism
+    double tickRate = 1.0 / 20.0;
+    double nextTick = GetTime() + tickRate;
 
     while (!WindowShouldClose()) {
         // Update
-        rbmk->update();
+        if (rbmkDials.varsSlowTicking == true) {
+            if (GetTime() >= nextTick) {
+                nextTick = GetTime() + tickRate;
+                rbmk->update();
+            }
+        } else {
+            rbmk->update();
+        }
+
         rbmkBuilder->update();
         controlPanel->update();
 

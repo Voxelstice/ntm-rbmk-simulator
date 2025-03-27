@@ -1,0 +1,22 @@
+// https://github.com/HbmMods/Hbm-s-Nuclear-Tech-GIT/blob/master/src/main/java/com/hbm/handler/neutron/NeutronStream.java
+
+#pragma once
+
+#include "raylib.h"
+
+enum NType {
+    NTYPE_SLOW = 0,
+    NTYPE_FAST = 1,
+    NTYPE_ANY = 2
+};
+
+class NeutronStream {
+    public:
+        NeutronStream();
+
+        Vector2 origin;
+        Vector2 vector;
+
+        double fluxQuantity;
+        double fluxRatio;
+};

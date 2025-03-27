@@ -19,7 +19,7 @@ typedef struct RBMKDials {
     int dialReasimCount = 6;
     bool dialReasimBoilers = false;
     double dialReasimBoilerSpeed = 0.05;
-    bool dialDisableMeltdowns = false;
+    bool dialDisableMeltdowns = true;
     double dialModeratorEfficiency = 1.0;
     double dialAbsorberEfficiency = 1.0;
     double dialReflectorEfficiency = 1.0;
@@ -28,6 +28,7 @@ typedef struct RBMKDials {
 
     // program vars
     bool varsEmbedded = false;
+    bool varsSlowTicking = true; // if enabled, simulation maintains a tick rate of 20, otherwise, it's gonna go as fast as the framerate
 } RBMKDials;
 
 extern RBMKDials rbmkDials;

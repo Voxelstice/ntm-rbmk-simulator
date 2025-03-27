@@ -25,6 +25,7 @@
 
 RBMK::RBMK() {
     if (rbmkDials.varsEmbedded == false) columnGridPosition = {86, 11};
+    else columnGridPosition = {0, 0};
 
     columns.clear();
 
@@ -65,10 +66,18 @@ ColumnBase* RBMK::makeColumnFromType(ColumnType type) {
 void RBMK::update() {
     if (state == RUNNING) {
         for (int i = 0; i < 15*15; i++) {
+            if (columns[i]->active == false) continue;
+
+            columns[i]->baseUpdate();
             columns[i]->update();
         }
+    } else if (state == MELTED) {
+
     } else {
         for (int i = 0; i < 15*15; i++) {
+            if (columns[i]->active == false) continue;
+
+            columns[i]->baseReset();
             columns[i]->reset();
         }
     }
@@ -88,9 +97,9 @@ void RBMK::draw() {
             column->draw(columnSize, destPos);
 
             // heat
-            float heatAlpha = Clamp((float) (column->heat / column->maxHeat), 0.0f, 1.0f);
+            float heatAlpha = Clamp((float) ((column->heat-20.0) / column->maxHeat), 0.0f, 1.0f);
             float heatY = std::round(10.0f * heatAlpha);
-            controlPanel->drawTex(controlPanel->ui, {0, 182}, {10, heatY}, Vector2Add(destPos, {0, columnSize.y-heatY}), {10, heatY}, 4);
+            controlPanel->drawTex(controlPanel->ui, {0, 182+columnSize.x-heatY}, {10, heatY}, Vector2Add(destPos, {0, columnSize.y-heatY}), {10, heatY}, 4);
         }
     }
 }
@@ -115,15 +124,26 @@ void RBMK::reset() {
 void RBMK::changeState(RBMKState newState) {
     if (newState == RUNNING) {
         for (int i = 0; i < 15*15; i++) {
+            if (columns[i]->active == false) continue;
+            
+            columns[i]->baseInit();
             columns[i]->init();
         }
+    } else if (newState == MELTED) {
+
     } else if (newState == OFFLINE) {
         for (int i = 0; i < 15*15; i++) {
+            if (columns[i]->active == false) continue;
+
+            columns[i]->baseReset();
             columns[i]->reset();
         }
     }
 
     state = newState;
+}
+void RBMK::meltdown() {
+    changeState(MELTED);
 }
 
 Vector2 RBMK::posFromIndex(int i) {

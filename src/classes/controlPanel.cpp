@@ -34,5 +34,5 @@ void ControlPanel::draw() {
     drawTex(ui, {0, 238}, {18, 18}, {46, 50}, {18, 18}, 4);
 
     // close the SCRAM button with the cover.
-    drawTex(ui, {229, 172}, {25, 51}, {30, 138}, {25, 51}, 4);
+    drawTex(ui, {229, 172}, {25, 51}, {31, 138}, {25, 51}, 4);
 }

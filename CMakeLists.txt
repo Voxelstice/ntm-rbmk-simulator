@@ -20,8 +20,17 @@ set(MAIN_SOURCE
         src/classes/rbmkBuilder.cpp
         src/classes/controlPanel.cpp
 
+        # neutron
+            src/classes/neutron/neutronStream.cpp
+
+        # fuel
+            src/classes/fuel/rbmkFuelRod.cpp
+            src/classes/fuel/fuelRegistry.cpp
+
         # columns
             src/classes/columns/columnBase.cpp
+            src/classes/columns/columnFluxReceiver.cpp
+
             src/classes/columns/columnBlank.cpp
             src/classes/columns/columnFuelRod.cpp
             src/classes/columns/columnControlRod.cpp
@@ -50,8 +59,17 @@ set(MAIN_HEADERS
         src/classes/rbmkBuilder.h
         src/classes/controlPanel.h
 
+        # neutron
+            src/classes/neutron/neutronStream.h
+
+        # fuel
+            src/classes/fuel/rbmkFuelRod.h
+            src/classes/fuel/fuelRegistry.h
+
         # columns
             src/classes/columns/columnBase.h
+            src/classes/columns/columnFluxReceiver.h
+
             src/classes/columns/columnBlank.h
             src/classes/columns/columnFuelRod.h
             src/classes/columns/columnControlRod.h

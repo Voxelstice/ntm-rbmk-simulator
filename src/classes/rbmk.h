@@ -8,7 +8,8 @@
 
 enum RBMKState {
     OFFLINE = 0,
-    RUNNING = 1
+    RUNNING = 1,
+    MELTED = 2
 };
 
 class RBMK {
@@ -23,6 +24,7 @@ class RBMK {
 
         void reset();
         void changeState(RBMKState newState);
+        void meltdown();
 
         ColumnBase* getColumn(int i);
 

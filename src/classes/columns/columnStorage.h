@@ -8,6 +8,5 @@ class ColumnStorage : public ColumnBase {
     public:
         ColumnStorage();
 
-        void update();
         void draw(Vector2 columnSize, Vector2 destPos);
 };

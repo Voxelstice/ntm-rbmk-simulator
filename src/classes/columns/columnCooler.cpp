@@ -1,10 +1,5 @@
 #include "raylib.h"
 
-#include <cmath>
-
-#include "../../mathHelper.h"
-using namespace MathHelper;
-
 #include "columnBase.h"
 #include "columnCooler.h"
 

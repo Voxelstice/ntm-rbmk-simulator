@@ -2,6 +2,7 @@
 
 #include "controlPanel.h"
 #include "rbmk.h"
+#include "dials.h"
 
 ControlPanel::ControlPanel(RBMK* m_rbmk) {
     ui = LoadTexture("assets/gui/gui_rbmk_console.png");
@@ -16,6 +17,11 @@ void ControlPanel::update() {
     
 }
 void ControlPanel::draw() {
+    if (rbmkDials.varsEmbedded == true) {
+        drawTex(ui, {86, 11}, {150, 150}, {0, 0}, {150, 150}, 4);
+        return;
+    }
+
     DrawTexturePro(ui, {0, 0, 244, 172}, {0, 0, 244 * 4, 172 * 4}, {0, 0}, 0, WHITE);
 
     // fill out these red slots, have a better way to handle those later on. i dont think this is needed though

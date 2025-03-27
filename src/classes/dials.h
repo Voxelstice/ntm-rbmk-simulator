@@ -3,6 +3,7 @@
 #pragma once
 
 typedef struct RBMKDials {
+    // ntm dials!
     double dialPassiveCooling = 1.0;
     double dialColumnHeatFlow = 0.2;
     double dialDiffusionMod = 1.0;
@@ -24,6 +25,9 @@ typedef struct RBMKDials {
     double dialReflectorEfficiency = 1.0;
     bool dialDisableDepletion = false;
     bool dialDisableXenon = false;
+
+    // program vars
+    bool varsEmbedded = false;
 } RBMKDials;
 
 extern RBMKDials rbmkDials;

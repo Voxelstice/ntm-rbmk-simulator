@@ -7,7 +7,7 @@
 #include "../../main.h"
 
 ColumnBlank::ColumnBlank() {
-    type = BLANKK;
+    type = COLUMN_BLANK;
 }
 
 void ColumnBlank::draw(Vector2 columnSize, Vector2 destPos) {

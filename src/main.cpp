@@ -9,11 +9,14 @@
 
 #include "logger.h"
 
+#include "classes/dials.h"
 #include "classes/rbmk.h"
+#include "classes/rbmkBuilder.h"
 #include "classes/controlPanel.h"
 
-RBMK *rbmk;
-ControlPanel *controlPanel;
+RBMK* rbmk;
+RBMKBuilder* rbmkBuilder;
+ControlPanel* controlPanel;
 
 int main() {
     // Initialization
@@ -25,13 +28,21 @@ int main() {
     TraceLog(LOG_INFO, "HBM'S NUCLEAR TECH MOD MADE BY HBMMODS - PLAY IT IMMEDIATELY");
     TraceLog(LOG_INFO, "----------------------------------------------------------------------------------");
 
-    InitWindow((244+20)*4, (172)*4, "NTM RBMK Simulator");
-    InitAudioDevice();
-    SetTargetFPS(60);
+    if (rbmkDials.varsEmbedded == true) {
+        TraceLog(LOG_INFO, "Launching in embedded mode");
+        InitWindow(150*4, 150*4, "NTM RBMK Simulator");
+        SetTargetFPS(20); // optimal tick speed in minecraft
+    } else {
+        TraceLog(LOG_INFO, "Launching in dedicated mode");
+        InitWindow((244+60)*4, (172)*4, "NTM RBMK Simulator");
+        InitAudioDevice();
+        SetTargetFPS(60);
+    }
 
     //----------------------------------------------------------------------------------
 
     rbmk = new RBMK();
+    rbmkBuilder = new RBMKBuilder();
     controlPanel = new ControlPanel(rbmk);
 
     //----------------------------------------------------------------------------------
@@ -39,6 +50,7 @@ int main() {
     while (!WindowShouldClose()) {
         // Update
         rbmk->update();
+        rbmkBuilder->update();
         controlPanel->update();
 
         if (IsKeyPressed(KEY_Z)) rbmk->changeState(RUNNING);
@@ -52,6 +64,7 @@ int main() {
             
             controlPanel->draw();
             rbmk->draw();
+            rbmkBuilder->draw();
         EndDrawing();
         //----------------------------------------------------------------------------------
     }

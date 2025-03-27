@@ -12,12 +12,12 @@ using namespace MathHelper;
 #include "../../main.h"
 
 ColumnFuelRod::ColumnFuelRod() {
-    type = FUEL;
+    type = COLUMN_FUEL;
 }
 
 void ColumnFuelRod::update() {
     if (rbmk->state == RUNNING) {
-        heat += 100;
+        heat += 1000;
     }
 }
 void ColumnFuelRod::draw(Vector2 columnSize, Vector2 destPos) {

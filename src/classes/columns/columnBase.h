@@ -5,21 +5,21 @@
 #include <vector>
 
 enum ColumnType {
-    NONE = -1,
-    BLANKK = 0, // God damn it raylib
-    FUEL = 10,
-    FUEL_SIM = 90,
-    CONTROL = 20,
-    CONTROL_AUTO = 30,
-    BOILER = 40,
-    MODERATOR = 50,
-    ABSORBER = 60,
-    REFLECTOR = 70,
-    OUTGASSER = 80,
-    BREEDER = 100,
-    STORAGE = 110,
-    COOLER = 120,
-    HEATEX = 130
+    COLUMN_NONE = -1,
+    COLUMN_BLANK = 0,
+    COLUMN_FUEL = 10,
+    COLUMN_FUEL_SIM = 90,
+    COLUMN_CONTROL = 20,
+    COLUMN_CONTROL_AUTO = 30,
+    COLUMN_BOILER = 40,
+    COLUMN_MODERATOR = 50,
+    COLUMN_ABSORBER = 60,
+    COLUMN_REFLECTOR = 70,
+    COLUMN_OUTGASSER = 80,
+    COLUMN_BREEDER = 100,
+    COLUMN_STORAGE = 110,
+    COLUMN_COOLER = 120,
+    COLUMN_HEATEX = 130
 };
 
 class ColumnBase {
@@ -50,7 +50,7 @@ class ColumnBase {
         int maxSteam = 16000;
 
         bool active = false;
-        ColumnType type = NONE;
+        ColumnType type = COLUMN_NONE;
 
         Vector2 pos = {0, 0};
 

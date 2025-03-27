@@ -7,36 +7,36 @@
 #include "rbmk.h"
 #include "../main.h"
 
+#include "dials.h"
+
+// THE COLUMN HORDE
 #include "columns/columnBlank.h"
 #include "columns/columnFuelRod.h"
+#include "columns/columnControlRod.h"
+#include "columns/columnControlRodAuto.h"
+#include "columns/columnBoiler.h"
+#include "columns/columnModerator.h"
+#include "columns/columnAbsorber.h"
+#include "columns/columnReflector.h"
+#include "columns/columnOutgasser.h"
+#include "columns/columnStorage.h"
+#include "columns/columnCooler.h"
+#include "columns/columnHeatExchanger.h"
 
 RBMK::RBMK() {
+    if (rbmkDials.varsEmbedded == false) columnGridPosition = {86, 11};
+
     columns.clear();
 
-    for (int i = 0; i < 15*15; i++) {
-        ColumnBase* column = new ColumnBase();
+    for (int i = 0; i < 15 * 15; i++) {
+        ColumnBase *column = new ColumnBase();
         column->active = false;
         column->pos = posFromIndex(i);
 
         columns.push_back(column);
     }
 
-    placeColumn({7, 7}, new ColumnFuelRod());
-    for (int i = 1; i < 5; i++) {
-        float i2 = float(i);
-        placeColumn({7-i2, 7}, new ColumnBlank());
-        placeColumn({7+i2, 7}, new ColumnBlank());
-        placeColumn({7, 7-i2}, new ColumnBlank());
-        placeColumn({7, 7+i2}, new ColumnBlank());
-
-        placeColumn({7-i2, 7-i2}, new ColumnBlank());
-        placeColumn({7+i2, 7+i2}, new ColumnBlank());
-        placeColumn({7+i2, 7-i2}, new ColumnBlank());
-        placeColumn({7-i2, 7+i2}, new ColumnBlank());
-    }
-    
-
-    //changeState(RUNNING);
+    placeColumn({7, 7}, new ColumnBlank()); // center
 }
 
 ColumnBase* RBMK::placeColumn(Vector2 pos, ColumnBase* column) {
@@ -44,6 +44,22 @@ ColumnBase* RBMK::placeColumn(Vector2 pos, ColumnBase* column) {
     column->pos = pos;
     columns[indexFromPos(pos)] = column;
     return column;
+}
+ColumnBase* RBMK::makeColumnFromType(ColumnType type) {
+         if (type == COLUMN_BLANK)          return new ColumnBlank();
+    else if (type == COLUMN_FUEL)           return new ColumnFuelRod();
+    else if (type == COLUMN_CONTROL)        return new ColumnControlRod();
+    else if (type == COLUMN_CONTROL_AUTO)   return new ColumnControlRodAuto();
+    else if (type == COLUMN_BOILER)         return new ColumnBoiler();
+    else if (type == COLUMN_MODERATOR)      return new ColumnModerator();
+    else if (type == COLUMN_ABSORBER)       return new ColumnAbsorber();
+    else if (type == COLUMN_REFLECTOR)      return new ColumnReflector();
+    else if (type == COLUMN_OUTGASSER)      return new ColumnOutgasser();
+    else if (type == COLUMN_STORAGE)        return new ColumnStorage();
+    else if (type == COLUMN_COOLER)         return new ColumnCooler();
+    else if (type == COLUMN_HEATEX)         return new ColumnHeatExchanger();
+
+    else                                    return new ColumnBase();
 }
 
 void RBMK::update() {
@@ -66,7 +82,7 @@ void RBMK::draw() {
 
         if (column->active == true) {
             Vector2 columnSize = {10, 10};
-            Vector2 destPos = {86 + columnSize.x * float(x), 11 + columnSize.y * float(y)};
+            Vector2 destPos = Vector2Add(columnGridPosition, {columnSize.x * float(x), columnSize.y * float(y)});
 
             // column itself
             column->draw(columnSize, destPos);

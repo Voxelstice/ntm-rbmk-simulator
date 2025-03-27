@@ -16,6 +16,7 @@ class RBMK {
         RBMK();
 
         ColumnBase* placeColumn(Vector2 pos, ColumnBase *column);
+        ColumnBase* makeColumnFromType(ColumnType type);
 
         void update();
         void draw();
@@ -30,4 +31,6 @@ class RBMK {
 
         RBMKState state = OFFLINE;
         std::vector<ColumnBase*> columns;
+
+        Vector2 columnGridPosition;
 };

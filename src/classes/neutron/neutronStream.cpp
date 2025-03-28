@@ -3,6 +3,9 @@
 
 #include "neutronStream.h"
 
-NeutronStream::NeutronStream() {
-
+NeutronStream::NeutronStream(Vector2 m_origin, Vector2 m_vector, double flux, double ratio) {
+    origin = m_origin;
+    vector = m_vector;
+    fluxQuantity = flux;
+    fluxRatio = ratio;
 }

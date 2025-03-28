@@ -1,7 +1,7 @@
 #include "raylib.h"
 
 #include "columnBase.h"
-#include "ColumnBoiler.h"
+#include "columnBoiler.h"
 
 #include "../dials.h"
 #include "../../main.h"

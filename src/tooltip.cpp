@@ -11,7 +11,7 @@ std::string tooltipText = "";
 bool activateTooltip = false;
 
 Vector2 tooltipOffset = {16, 16};
-float tooltipSize = 24;
+float tooltipSize = 16;
 float tooltipPadding = 6;
 
 float screenPadding = 8;

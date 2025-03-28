@@ -19,7 +19,7 @@ typedef struct RBMKDials {
     int dialReasimCount = 6;
     bool dialReasimBoilers = false;
     double dialReasimBoilerSpeed = 0.05;
-    bool dialDisableMeltdowns = true;
+    bool dialDisableMeltdowns = false;
     double dialModeratorEfficiency = 1.0;
     double dialAbsorberEfficiency = 1.0;
     double dialReflectorEfficiency = 1.0;

@@ -28,8 +28,8 @@ class RBMK {
 
         ColumnBase* getColumn(int i);
 
-        Vector2 RBMK::posFromIndex(int i);
-        int RBMK::indexFromPos(Vector2 pos);
+        Vector2 posFromIndex(int i);
+        int indexFromPos(Vector2 pos);
 
         RBMKState state = OFFLINE;
         std::vector<ColumnBase*> columns;

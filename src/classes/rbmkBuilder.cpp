@@ -27,48 +27,44 @@ Vector2 RBMKBuilder::getSelectedPosition() {
     return Vector2Divide(Vector2Clamp(roundedPos, {0, 0}, {140, 140}), {10, 10});
 }
 ColumnType RBMKBuilder::getTypeFromIndex(int i) {
-    // has to be hardcoded :(
-    // atleast we make it look nice
-
-    // ROW 1
-         if (i == 0)  return COLUMN_BLANK;
-    else if (i == 1)  return COLUMN_FUEL;
-    else if (i == 2)  return COLUMN_CONTROL;
-    else if (i == 3)  return COLUMN_CONTROL_AUTO;
-
-    // ROW 2
-    else if (i == 4)  return COLUMN_BOILER;
-    else if (i == 5)  return COLUMN_MODERATOR;
-    else if (i == 6)  return COLUMN_ABSORBER;
-    else if (i == 7)  return COLUMN_REFLECTOR;
-
-    // ROW 3
-    else if (i == 8)  return COLUMN_OUTGASSER;
-    else if (i == 9)  return COLUMN_STORAGE;
-    else if (i == 10) return COLUMN_COOLER;
-    else if (i == 11) return COLUMN_HEATEX;
-
-    // ROW 4
-    // ...is pretty much empty
-
-    return COLUMN_NONE;
+    switch (i) {
+        // row 1
+        case 0: return COLUMN_BLANK;
+        case 1: return COLUMN_FUEL;
+        case 2: return COLUMN_CONTROL;
+        case 3: return COLUMN_CONTROL_AUTO;
+        // row 2
+        case 4: return COLUMN_BOILER;
+        case 5: return COLUMN_MODERATOR;
+        case 6: return COLUMN_ABSORBER;
+        case 7: return COLUMN_REFLECTOR;
+        // row 3
+        case 8: return COLUMN_OUTGASSER;
+        case 9: return COLUMN_STORAGE;
+        case 10: return COLUMN_COOLER;
+        case 11: return COLUMN_HEATEX;
+        // row 4
+        default: return COLUMN_NONE;
+    }
 }
 std::string RBMKBuilder::getStringFromType(ColumnType type) {
-         if (type == COLUMN_BLANK)          return "BLANK";
-    else if (type == COLUMN_FUEL)           return "FUEL";
-    else if (type == COLUMN_FUEL_SIM)       return "FUEL_SIM";
-    else if (type == COLUMN_CONTROL)        return "CONTROL";
-    else if (type == COLUMN_CONTROL_AUTO)   return "CONTROL_AUTO";
-    else if (type == COLUMN_BOILER)         return "BOILER";
-    else if (type == COLUMN_MODERATOR)      return "MODERATOR";
-    else if (type == COLUMN_ABSORBER)       return "ABSORBER";
-    else if (type == COLUMN_REFLECTOR)      return "REFLECTOR";
-    else if (type == COLUMN_OUTGASSER)      return "OUTGASSER";
-    else if (type == COLUMN_STORAGE)        return "STORAGE";
-    else if (type == COLUMN_COOLER)         return "COOLER";
-    else if (type == COLUMN_HEATEX)         return "HEATEX";
-
-    return "NONE";
+    // i should have maybe used a switch from the beginning
+    switch (type) {
+        case COLUMN_BLANK:          return "BLANK";
+        case COLUMN_FUEL:           return "FUEL";
+        case COLUMN_FUEL_SIM:       return "FUEL_SIM";
+        case COLUMN_CONTROL:        return "CONTROL";
+        case COLUMN_CONTROL_AUTO:   return "CONTROL_AUTO";
+        case COLUMN_BOILER:         return "BOILER";
+        case COLUMN_MODERATOR:      return "MODERATOR";
+        case COLUMN_ABSORBER:       return "ABSORBER";
+        case COLUMN_REFLECTOR:      return "REFLECTOR";
+        case COLUMN_OUTGASSER:      return "OUTGASSER";
+        case COLUMN_STORAGE:        return "STORAGE";
+        case COLUMN_COOLER:         return "COOLER";
+        case COLUMN_HEATEX:         return "HEATEX";
+        default:                    return "NONE";
+    }
 }
 
 void RBMKBuilder::update() {

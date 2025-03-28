@@ -13,7 +13,7 @@ enum NType {
 
 class NeutronStream {
     public:
-        NeutronStream();
+        NeutronStream(Vector2 m_origin, Vector2 m_vector, double flux, double ratio);
 
         Vector2 origin;
         Vector2 vector;

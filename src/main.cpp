@@ -11,9 +11,48 @@
 
 #include "classes/fuel/fuelRegistry.h"
 
+#if defined(PLATFORM_WEB)
+    #include <emscripten/emscripten.h>
+#endif
+
 RBMK* rbmk;
 RBMKBuilder* rbmkBuilder;
 ControlPanel* controlPanel;
+
+double tickRate;
+double nextTick;
+
+void update() {
+    // Update
+    if (rbmkDials.varsSlowTicking == true) {
+        if (GetTime() >= nextTick) {
+            nextTick = GetTime() + tickRate;
+            rbmk->update();
+        }
+    } else {
+        rbmk->update();
+    }
+
+    rbmkBuilder->update();
+    controlPanel->update();
+
+    if (IsKeyPressed(KEY_Z)) rbmk->changeState(RUNNING);
+    if (IsKeyPressed(KEY_X)) rbmk->changeState(OFFLINE);
+
+    //----------------------------------------------------------------------------------
+
+    // Draw
+    BeginDrawing();
+        ClearBackground(GRAY);
+
+        controlPanel->draw();
+        rbmk->draw();
+        rbmkBuilder->draw();
+
+        DrawTooltip();
+    EndDrawing();
+    //----------------------------------------------------------------------------------
+}
 
 int main() {
     // Initialization
@@ -48,40 +87,21 @@ int main() {
     //----------------------------------------------------------------------------------
 
     // internal tick mechanism
-    double tickRate = 1.0 / 20.0;
-    double nextTick = GetTime() + tickRate;
+    tickRate = 1.0 / 20.0;
+    nextTick = GetTime() + tickRate;
 
-    while (!WindowShouldClose()) {
-        // Update
-        if (rbmkDials.varsSlowTicking == true) {
-            if (GetTime() >= nextTick) {
-                nextTick = GetTime() + tickRate;
-                rbmk->update();
-            }
-        } else {
-            rbmk->update();
+    int fps = 60;
+    if (rbmkDials.varsEmbedded == true) fps = 20;
+
+    #if defined(PLATFORM_WEB)
+        emscripten_set_main_loop(update, fps, 1);
+    #else
+        SetTargetFPS(fps);
+
+        while (!WindowShouldClose()) {
+            update();
         }
-
-        rbmkBuilder->update();
-        controlPanel->update();
-
-        if (IsKeyPressed(KEY_Z)) rbmk->changeState(RUNNING);
-        if (IsKeyPressed(KEY_X)) rbmk->changeState(OFFLINE);
-
-        //----------------------------------------------------------------------------------
-
-        // Draw
-        BeginDrawing();
-            ClearBackground(GRAY);
-            
-            controlPanel->draw();
-            rbmk->draw();
-            rbmkBuilder->draw();
-
-            DrawTooltip();
-        EndDrawing();
-        //----------------------------------------------------------------------------------
-    }
+    #endif
 
     TraceLog(LOG_INFO, "----------------------------------------------------------------------------------");
     TraceLog(LOG_INFO, "Application closing");

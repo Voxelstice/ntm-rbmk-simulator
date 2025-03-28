@@ -121,7 +121,7 @@ std::vector<std::string> ColumnFuelRod::getInfo() {
         vector.push_back("Depletion: " + std::string(TextFormat("%.3f", (1.0-fuel->getEnrichment())*100.0)) + "%");
         vector.push_back("Xenon poison: " + std::string(TextFormat("%.3f", fuel->getPoisonLevel())) + "%");
         vector.push_back("Core temperature: " + std::string(TextFormat("%.1f", fuel->itemCoreHeat)) + " C");
-        vector.push_back("Skin temperature: " + std::string(TextFormat("%.1f", fuel->itemHullHeat)) + " C");
+        vector.push_back("Skin temperature: " + std::string(TextFormat("%.1f", fuel->itemHullHeat)) + " C / " + std::string(TextFormat("%.1f", fuel->meltingPoint)) + " C");
     }
     return vector;
 }

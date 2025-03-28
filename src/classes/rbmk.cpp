@@ -48,20 +48,22 @@ ColumnBase* RBMK::placeColumn(Vector2 pos, ColumnBase* column) {
     return column;
 }
 ColumnBase* RBMK::makeColumnFromType(ColumnType type) {
-         if (type == COLUMN_BLANK)          return new ColumnBlank();
-    else if (type == COLUMN_FUEL)           return new ColumnFuelRod();
-    else if (type == COLUMN_CONTROL)        return new ColumnControlRod();
-    else if (type == COLUMN_CONTROL_AUTO)   return new ColumnControlRodAuto();
-    else if (type == COLUMN_BOILER)         return new ColumnBoiler();
-    else if (type == COLUMN_MODERATOR)      return new ColumnModerator();
-    else if (type == COLUMN_ABSORBER)       return new ColumnAbsorber();
-    else if (type == COLUMN_REFLECTOR)      return new ColumnReflector();
-    else if (type == COLUMN_OUTGASSER)      return new ColumnOutgasser();
-    else if (type == COLUMN_STORAGE)        return new ColumnStorage();
-    else if (type == COLUMN_COOLER)         return new ColumnCooler();
-    else if (type == COLUMN_HEATEX)         return new ColumnHeatExchanger();
+    switch (type) {
+        case COLUMN_BLANK:          return new ColumnBlank();
+        case COLUMN_FUEL:           return new ColumnFuelRod();
+        case COLUMN_CONTROL:        return new ColumnControlRod();
+        case COLUMN_CONTROL_AUTO:   return new ColumnControlRodAuto();
+        case COLUMN_BOILER:         return new ColumnBoiler();
+        case COLUMN_MODERATOR:      return new ColumnModerator();
+        case COLUMN_ABSORBER:       return new ColumnAbsorber();
+        case COLUMN_REFLECTOR:      return new ColumnReflector();
+        case COLUMN_OUTGASSER:      return new ColumnOutgasser();
+        case COLUMN_STORAGE:        return new ColumnStorage();
+        case COLUMN_COOLER:         return new ColumnCooler();
+        case COLUMN_HEATEX:         return new ColumnHeatExchanger();
 
-    else                                    return new ColumnBase();
+        default:                    return new ColumnBase();
+    }
 }
 
 void RBMK::update() {

@@ -1,10 +1,12 @@
 // https://github.com/HbmMods/Hbm-s-Nuclear-Tech-GIT/blob/master/src/main/java/com/hbm/tileentity/machine/rbmk/TileEntityRBMKRod.java
-// https://github.com/HbmMods/Hbm-s-Nuclear-Tech-GIT/blob/2d48960e2d12e8a5b03ccb92de8849f067b85046/src/main/java/com/hbm/inventory/gui/GUIRBMKConsole.java#L359
+// https://github.com/HbmMods/Hbm-s-Nuclear-Tech-GIT/blob/master/src/main/java/com/hbm/inventory/gui/GUIRBMKConsole.java#L359
 
 #include "raylib.h"
 #include "raymath.h"
 
 #include <cmath>
+
+#include "../../mathHelper.h"
 
 #include "columnBase.h"
 #include "columnFuelRod.h"
@@ -19,6 +21,7 @@ ColumnFuelRod::ColumnFuelRod() {
     fuel = new RBMKFuelRod("");
 }
 
+// main
 void ColumnFuelRod::init() {
     fuel = PrepareFuel("rbmk_fuel_ueu");
 
@@ -89,14 +92,14 @@ void ColumnFuelRod::reset() {
     fuel->reset();
 }
 
-void ColumnFuelRod::receiveFlux(NeutronStream stream) {
+// neutrons
+void ColumnFuelRod::receiveFlux(NeutronStream* stream) {
     double fastFlux = fluxQuantity * fluxFastRatio;
-    double fastFluxIn = stream.fluxQuantity * stream.fluxRatio;
+    double fastFluxIn = stream->fluxQuantity * stream->fluxRatio;
 
-    fluxQuantity += stream.fluxQuantity;
+    fluxQuantity += stream->fluxQuantity;
     fluxFastRatio = (fastFlux + fastFluxIn) / fluxQuantity;
 }
-
 double ColumnFuelRod::fluxFromType(NType type) {
     double fastFlux = fluxQuantity * fluxFastRatio;
     double slowFlux = fluxQuantity * (1.0 - fluxFastRatio);
@@ -109,11 +112,14 @@ double ColumnFuelRod::fluxFromType(NType type) {
 
     return 0.0;
 }
-
 void ColumnFuelRod::spreadFlux(double flux, double ratio) {
-
+    for (Vector2 dir : getCardinalDirections()) {
+        NeutronStream* stream = new NeutronStream(pos, dir, flux, ratio);
+        rbmk->addStream(stream);
+    }
 }
 
+// other
 std::vector<std::string> ColumnFuelRod::getInfo() {
     std::vector<std::string> vector;
 

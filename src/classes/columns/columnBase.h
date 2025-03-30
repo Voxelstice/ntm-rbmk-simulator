@@ -43,10 +43,20 @@ class ColumnBase {
         void baseReset();
         virtual void reset();
 
+        // vars
         // its so tempting to use floats...
         // but for the sake of accuracy we're gonna remain type-accurate
         double heat = 20.0;
         double maxHeat = 1500.0;
+
+        bool active = false;
+        bool moderated = false;
+        ColumnType type = COLUMN_NONE;
+
+        Vector2 pos = {0, 0};
+
+        std::vector<ColumnBase*> neighbors;
+        std::vector<ColumnBase*> rec;
 
         // realishit sim!
         int water = 0;
@@ -54,12 +64,4 @@ class ColumnBase {
 
         int maxWater = 16000;
         int maxSteam = 16000;
-
-        bool active = false;
-        ColumnType type = COLUMN_NONE;
-
-        Vector2 pos = {0, 0};
-
-        std::vector<ColumnBase*> neighbors;
-        std::vector<ColumnBase*> rec;
 };

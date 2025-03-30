@@ -15,9 +15,14 @@ class NeutronStream {
     public:
         NeutronStream(Vector2 m_origin, Vector2 m_vector, double flux, double ratio);
 
+        void runStreamInteraction();
+        void moderateStream();
+
         Vector2 origin;
         Vector2 vector;
 
         double fluxQuantity;
         double fluxRatio;
+
+        bool active = false;
 };

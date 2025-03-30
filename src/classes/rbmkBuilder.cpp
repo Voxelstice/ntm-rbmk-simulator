@@ -7,10 +7,11 @@
 
 #include "rbmkBuilder.h"
 #include "dials.h"
-#include "../mathHelper.h"
 
 #include "../main.h"
+#include "../text.h"
 #include "../tooltip.h"
+#include "../mathHelper.h"
 
 RBMKBuilder::RBMKBuilder() {
     ui = LoadTexture("assets/gui/gui_rbmk_builder.png");
@@ -94,20 +95,36 @@ void RBMKBuilder::draw() {
         return;
     }
 
-    controlPanel->drawTex(ui, {0, 0}, {60, 172}, {244, 0}, {60, 172}, 4);
-
-    // draw selection
-    Vector2 pos = Vector2Multiply(getSelectedPosition(), {10, 10});
-    if (isMouseWithinGrid() && rbmk->state == OFFLINE)
-        controlPanel->drawTex(controlPanel->ui, {0, 192}, {10, 10}, Vector2Add(rbmk->columnGridPosition, pos), {10, 10}, 4);
-
-    // that ui
-    for (int y = 0; y < 4; y++) {
-        for (int x = 0; x < 4; x++) {
-            int i = y * 4 + x;
-            if (columnIndex == i) {
-                controlPanel->drawTex(controlPanel->ui, {0, 192}, {10, 10}, {244+10+(10*(float)x), 11+(10*(float)y)}, {10, 10}, 4);
+    if (rbmk->state == OFFLINE) {
+        controlPanel->drawTex(ui, {0, 0}, {60, 172}, {244, 0}, {60, 172}, 4);
+    
+        // draw selection
+        Vector2 pos = Vector2Multiply(getSelectedPosition(), {10, 10});
+        if (isMouseWithinGrid() && rbmk->state == OFFLINE)
+            controlPanel->drawTex(controlPanel->ui, {0, 192}, {10, 10}, Vector2Add(rbmk->columnGridPosition, pos), {10, 10}, 4);
+    
+        // that ui
+        for (int y = 0; y < 4; y++) {
+            for (int x = 0; x < 4; x++) {
+                int i = y * 4 + x;
+                if (columnIndex == i) {
+                    controlPanel->drawTex(controlPanel->ui, {0, 192}, {10, 10}, {244+10+(10*(float)x), 11+(10*(float)y)}, {10, 10}, 4);
+                }
             }
         }
+
+        TextDrawAlign("Offline", Vector2Add({244*4, (float)GetScreenHeight() - 48}, {60*2, 0}), 16.0f, BLACK, ALIGN_CENTER, ALIGN_MIDDLE);
+    } else if (rbmk->state == RUNNING) {
+        controlPanel->drawTex(ui, {60, 0}, {60, 172}, {244, 0}, {60, 172}, 4);
+
+        TextDrawAlign("Online", Vector2Add({244*4, (float)GetScreenHeight() - 48}, {60*2, 0}), 16.0f, BLACK, ALIGN_CENTER, ALIGN_MIDDLE);
+    } else if (rbmk->state == MELTED) {
+        controlPanel->drawTex(ui, {60, 0}, {60, 172}, {244, 0}, {60, 172}, 4);
+
+        TextDrawAlign("Destroyed", Vector2Add({244*4, (float)GetScreenHeight() - 48}, {60*2, 0}), 16.0f, BLACK, ALIGN_CENTER, ALIGN_MIDDLE);
+    } else {
+        controlPanel->drawTex(ui, {60, 0}, {60, 172}, {244, 0}, {60, 172}, 4);
+
+        TextDrawAlign("Unknown", Vector2Add({244*4, (float)GetScreenHeight() - 48}, {60*2, 0}), 16.0f, BLACK, ALIGN_CENTER, ALIGN_MIDDLE);
     }
 }

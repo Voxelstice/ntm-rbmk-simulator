@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "columns/columnBase.h"
+#include "neutron/neutronStream.h"
 
 enum RBMKState {
     OFFLINE = 0,
@@ -16,23 +17,37 @@ class RBMK {
     public:
         RBMK();
 
-        ColumnBase* placeColumn(Vector2 pos, ColumnBase *column);
-        ColumnBase* makeColumnFromType(ColumnType type);
-
+        // main
+        void updateControl();
         void update();
         void draw();
-
         void reset();
+
+        // neutrons
+        void addStream(NeutronStream* stream);
+
+        // radiation
+        void emitRadiation(double rad);
+
+        // states
         void changeState(RBMKState newState);
         void meltdown();
 
+        // columns
+        ColumnBase* placeColumn(Vector2 pos, ColumnBase *column);
+        ColumnBase* makeColumnFromType(ColumnType type);
         ColumnBase* getColumn(int i);
 
+        // utils
         Vector2 posFromIndex(int i);
         int indexFromPos(Vector2 pos);
 
+        // vars
         RBMKState state = OFFLINE;
         std::vector<ColumnBase*> columns;
+        std::vector<NeutronStream*> streams;
 
         Vector2 columnGridPosition;
+
+        double radiationEmitted = 0;
 };

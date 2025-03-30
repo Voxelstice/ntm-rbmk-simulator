@@ -16,7 +16,5 @@ class ColumnFluxReceiver : public ColumnBase {
         virtual void draw(Vector2 columnSize, Vector2 destPos);
         virtual void reset();
 
-        virtual void receiveFlux(NeutronStream stream);
-
-        bool moderated = false;
+        virtual void receiveFlux(NeutronStream* stream);
 };

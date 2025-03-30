@@ -33,6 +33,7 @@ void update() {
         rbmk->update();
     }
 
+    rbmk->updateControl(); // we also still update it, just for the controls
     rbmkBuilder->update();
     controlPanel->update();
 

@@ -42,3 +42,12 @@ void SetTooltip(std::string tooltip) {
     tooltipText = tooltip;
     activateTooltip = true;
 }
+void SetTooltipOnHover(std::string tooltip, Vector2 pos, Vector2 size) {
+    SetTooltipOnHover(tooltip, {pos.x, pos.y, size.x, size.y});
+}
+void SetTooltipOnHover(std::string tooltip, Rectangle rect) {
+    if (CheckCollisionPointRec(GetMousePosition(), rect)) {
+        tooltipText = tooltip;
+        activateTooltip = true;
+    }
+}

@@ -18,4 +18,4 @@ void ColumnFluxReceiver::update() { }
 void ColumnFluxReceiver::draw(Vector2 columnSize, Vector2 destPos) { }
 void ColumnFluxReceiver::reset() { }
 
-void ColumnFluxReceiver::receiveFlux(NeutronStream stream) { }
+void ColumnFluxReceiver::receiveFlux(NeutronStream* stream) { }

@@ -12,18 +12,21 @@ class ColumnFuelRod : public ColumnFluxReceiver {
     public:
         ColumnFuelRod();
 
+        // main
         void init();
         void update();
         void draw(Vector2 columnSize, Vector2 destPos);
         void reset();
 
-        void receiveFlux(NeutronStream stream);
+        // neutrons
+        void receiveFlux(NeutronStream* stream);
         double fluxFromType(NType type);
-
         void spreadFlux(double flux, double ratio);
 
+        // other
         std::vector<std::string> getInfo();
 
+        // vars
         double fluxFastRatio = 0.0;
         double fluxQuantity = 0.0;
         double lastFluxQuantity = 0.0;

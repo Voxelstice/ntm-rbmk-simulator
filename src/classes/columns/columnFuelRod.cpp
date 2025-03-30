@@ -18,7 +18,7 @@
 
 ColumnFuelRod::ColumnFuelRod() {
     type = COLUMN_FUEL;
-    fuel = new RBMKFuelRod("");
+    fuel = new RBMKFuelRod("", "");
 }
 
 // main

@@ -8,11 +8,13 @@
 #include "../../mathHelper.h"
 #include "../dials.h"
 
-RBMKFuelRod::RBMKFuelRod(std::string m_fullName) {
+RBMKFuelRod::RBMKFuelRod(std::string m_internalName, std::string m_fullName) {
+    internalName = m_internalName;
     fullName = m_fullName;
 }
 RBMKFuelRod::RBMKFuelRod(RBMKFuelRod* fuel) {
     // This constructor is specifically to just "clone" the fuel
+    internalName = fuel->internalName;
     itemName = fuel->itemName;
     fullName = fuel->fullName;
 

@@ -29,7 +29,7 @@ enum EnumDepleteFunc {
 
 class RBMKFuelRod {
     public:
-        RBMKFuelRod(std::string m_fullName);
+        RBMKFuelRod(std::string m_internalName, std::string m_fullName);
         RBMKFuelRod(RBMKFuelRod *fuel);
 
         // FUNCTIONS
@@ -71,6 +71,7 @@ class RBMKFuelRod {
         RBMKFuelRod *setNeutronTypes(NType nType, NType rType);
 
         // VARIABLES
+        std::string internalName = "";
         std::string itemName = "";
         std::string fullName = "";
 

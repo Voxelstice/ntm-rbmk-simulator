@@ -13,6 +13,7 @@
 
 #include "../dials.h"
 #include "../../main.h"
+#include "../../utils.h"
 
 #include "../fuel/fuelRegistry.h"
 
@@ -72,7 +73,7 @@ void ColumnFuelRod::update() {
 }
 void ColumnFuelRod::draw(Vector2 columnSize, Vector2 destPos) {
     // NOTE: reasim uses X 90
-    controlPanel->drawTex(controlPanel->ui, {10, 172}, columnSize, destPos, columnSize, 4);
+    DrawTextureS(controlPanel->ui, {10, 172}, columnSize, destPos, columnSize, 4);
 
     if (hasRod == true) {
         float coreHeatY = std::round(8.0f * Clamp((float)((fuel->itemCoreHeat - 20.0) / fuel->meltingPoint), 0.0f, 1.0f));
@@ -81,11 +82,11 @@ void ColumnFuelRod::draw(Vector2 columnSize, Vector2 destPos) {
 
         //printf("%i\n", (int)fuel->itemYield);
 
-        controlPanel->drawTex(controlPanel->ui, {11, 183+8-coreHeatY}, {2, coreHeatY}, Vector2Add(destPos, {1, 1+8-coreHeatY}), {2, coreHeatY}, 4); // core heat
-        controlPanel->drawTex(controlPanel->ui, {14, 183+8-enrichmentY}, {2, enrichmentY}, Vector2Add(destPos, {4, 1+8-enrichmentY}), {2, enrichmentY}, 4); // depletion
+        DrawTextureS(controlPanel->ui, {11, 183+8-coreHeatY}, {2, coreHeatY}, Vector2Add(destPos, {1, 1+8-coreHeatY}), {2, coreHeatY}, 4); // core heat
+        DrawTextureS(controlPanel->ui, {14, 183+8-enrichmentY}, {2, enrichmentY}, Vector2Add(destPos, {4, 1+8-enrichmentY}), {2, enrichmentY}, 4); // depletion
 
         // interestingly xenon isn't even drawn at all!
-        controlPanel->drawTex(controlPanel->ui, {17, 183+8-xenonY}, {2, xenonY}, Vector2Add(destPos, {7, 1+8-xenonY}), {2, xenonY}, 4); // xenon
+        DrawTextureS(controlPanel->ui, {17, 183+8-xenonY}, {2, xenonY}, Vector2Add(destPos, {7, 1+8-xenonY}), {2, xenonY}, 4); // xenon
     }
 }
 void ColumnFuelRod::reset() {

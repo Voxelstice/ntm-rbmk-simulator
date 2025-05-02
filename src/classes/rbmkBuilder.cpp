@@ -12,6 +12,10 @@
 #include "../text.h"
 #include "../tooltip.h"
 #include "../mathHelper.h"
+#include "../utils.h"
+
+#include "submenu/submenu.h"
+#include "submenu/submenuFuelRod.h"
 
 RBMKBuilder::RBMKBuilder() {
     ui = LoadTexture("assets/gui/gui_rbmk_builder.png");
@@ -49,7 +53,6 @@ ColumnType RBMKBuilder::getTypeFromIndex(int i) {
     }
 }
 std::string RBMKBuilder::getStringFromType(ColumnType type) {
-    // i should have maybe used a switch from the beginning
     switch (type) {
         case COLUMN_BLANK:          return "BLANK";
         case COLUMN_FUEL:           return "FUEL";
@@ -68,8 +71,49 @@ std::string RBMKBuilder::getStringFromType(ColumnType type) {
     }
 }
 
+bool RBMKBuilder::hasSubmenu(ColumnType type) {
+    switch (type) {
+        case COLUMN_BLANK:          return false;
+        case COLUMN_FUEL:           return true;
+        case COLUMN_CONTROL:        return true;
+        case COLUMN_CONTROL_AUTO:   return true;
+        case COLUMN_BOILER:         return true;
+        case COLUMN_MODERATOR:      return false;
+        case COLUMN_ABSORBER:       return false;
+        case COLUMN_REFLECTOR:      return false;
+        case COLUMN_OUTGASSER:      return true;
+        case COLUMN_STORAGE:        return true;
+        case COLUMN_COOLER:         return true;
+        case COLUMN_HEATEX:         return true;
+
+        default:                    return false;
+    }
+}
+Submenu* RBMKBuilder::makeSubmenuFromType(ColumnType type, Vector2 columnPos) {
+    switch (type) {
+        case COLUMN_FUEL:           return new SubmenuFuelRod(columnPos);
+        case COLUMN_CONTROL:        return new Submenu(columnPos);
+        case COLUMN_CONTROL_AUTO:   return new Submenu(columnPos);
+        case COLUMN_BOILER:         return new Submenu(columnPos);
+        case COLUMN_OUTGASSER:      return new Submenu(columnPos);
+        case COLUMN_STORAGE:        return new Submenu(columnPos);
+        case COLUMN_COOLER:         return new Submenu(columnPos);
+        case COLUMN_HEATEX:         return new Submenu(columnPos);
+
+        default:                    return new Submenu(columnPos);
+    }
+}
+
 void RBMKBuilder::update() {
-    if (rbmkDials.varsEmbedded == true) {
+    if (rbmkDials.varsEmbedded == true) return;
+    
+    if (submenuActive == true) {
+        if (IsKeyPressed(KEY_ESCAPE)) {
+            submenu->close();
+            submenuActive = false;
+            delete submenu;
+        }
+
         return;
     }
 
@@ -86,8 +130,19 @@ void RBMKBuilder::update() {
     }
 
     Vector2 rbmkPos = getSelectedPosition();
-    if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && isMouseWithinGrid() && rbmk->state == OFFLINE) {
-        rbmk->placeColumn(rbmkPos, rbmk->makeColumnFromType(getTypeFromIndex(columnIndex)));
+    if (isMouseWithinGrid()) {
+        if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && rbmk->state == OFFLINE) {
+            rbmk->placeColumn(rbmkPos, rbmk->makeColumnFromType(getTypeFromIndex(columnIndex)));
+        }
+        if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)) {
+            ColumnBase* column = rbmk->getColumn(rbmk->indexFromPos(rbmkPos));
+            if (column->active == true) {
+                if (hasSubmenu(column->type)) {
+                    submenu = makeSubmenuFromType(column->type, rbmkPos);
+                    submenuActive = true;
+                }
+            }
+        }
     }
 }
 void RBMKBuilder::draw() {
@@ -96,35 +151,43 @@ void RBMKBuilder::draw() {
     }
 
     if (rbmk->state == OFFLINE) {
-        controlPanel->drawTex(ui, {0, 0}, {60, 172}, {244, 0}, {60, 172}, 4);
+        DrawTextureS(ui, {0, 0}, {60, 172}, {244, 0}, {60, 172}, 4);
     
         // draw selection
         Vector2 pos = Vector2Multiply(getSelectedPosition(), {10, 10});
-        if (isMouseWithinGrid() && rbmk->state == OFFLINE)
-            controlPanel->drawTex(controlPanel->ui, {0, 192}, {10, 10}, Vector2Add(rbmk->columnGridPosition, pos), {10, 10}, 4);
-    
-        // that ui
-        for (int y = 0; y < 4; y++) {
-            for (int x = 0; x < 4; x++) {
-                int i = y * 4 + x;
-                if (columnIndex == i) {
-                    controlPanel->drawTex(controlPanel->ui, {0, 192}, {10, 10}, {244+10+(10*(float)x), 11+(10*(float)y)}, {10, 10}, 4);
+
+        if (submenuActive == false) {
+            if (isMouseWithinGrid() && rbmk->state == OFFLINE)
+                DrawTextureS(controlPanel->ui, {0, 192}, {10, 10}, Vector2Add(rbmk->columnGridPosition, pos), {10, 10}, 4);
+        
+            // that ui
+            for (int y = 0; y < 4; y++) {
+                for (int x = 0; x < 4; x++) {
+                    int i = y * 4 + x;
+                    if (columnIndex == i) {
+                        DrawTextureS(controlPanel->ui, {0, 192}, {10, 10}, {244+10+(10*(float)x), 11+(10*(float)y)}, {10, 10}, 4);
+                    }
                 }
             }
         }
 
         TextDrawAlign("Offline", Vector2Add({244*4, (float)GetScreenHeight() - 48}, {60*2, 0}), 16.0f, BLACK, ALIGN_CENTER, ALIGN_MIDDLE);
     } else if (rbmk->state == RUNNING) {
-        controlPanel->drawTex(ui, {60, 0}, {60, 172}, {244, 0}, {60, 172}, 4);
+        DrawTextureS(ui, {60, 0}, {60, 172}, {244, 0}, {60, 172}, 4);
 
         TextDrawAlign("Online", Vector2Add({244*4, (float)GetScreenHeight() - 48}, {60*2, 0}), 16.0f, BLACK, ALIGN_CENTER, ALIGN_MIDDLE);
     } else if (rbmk->state == MELTED) {
-        controlPanel->drawTex(ui, {60, 0}, {60, 172}, {244, 0}, {60, 172}, 4);
+        DrawTextureS(ui, {60, 0}, {60, 172}, {244, 0}, {60, 172}, 4);
 
         TextDrawAlign("Destroyed", Vector2Add({244*4, (float)GetScreenHeight() - 48}, {60*2, 0}), 16.0f, BLACK, ALIGN_CENTER, ALIGN_MIDDLE);
     } else {
-        controlPanel->drawTex(ui, {60, 0}, {60, 172}, {244, 0}, {60, 172}, 4);
+        DrawTextureS(ui, {60, 0}, {60, 172}, {244, 0}, {60, 172}, 4);
 
         TextDrawAlign("Unknown", Vector2Add({244*4, (float)GetScreenHeight() - 48}, {60*2, 0}), 16.0f, BLACK, ALIGN_CENTER, ALIGN_MIDDLE);
+    }
+    
+    if (submenuActive == true) {
+        DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), Fade(BLACK, 0.5f));
+        submenu->draw();
     }
 }

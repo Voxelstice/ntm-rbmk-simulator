@@ -5,6 +5,7 @@
 
 #include "../dials.h"
 #include "../../main.h"
+#include "../../utils.h"
 
 ColumnBoiler::ColumnBoiler() {
     type = COLUMN_BOILER;
@@ -14,5 +15,5 @@ void ColumnBoiler::update() {
     
 }
 void ColumnBoiler::draw(Vector2 columnSize, Vector2 destPos) {
-    controlPanel->drawTex(controlPanel->ui, {40, 172}, columnSize, destPos, columnSize, 4);
+    DrawTextureS(controlPanel->ui, {40, 172}, columnSize, destPos, columnSize, 4);
 }

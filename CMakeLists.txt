@@ -12,6 +12,7 @@ set(MAIN_SOURCE
     src/logger.cpp
     src/tooltip.cpp
     src/mathHelper.cpp
+    src/utils.cpp
 
     # libs
         src/libs/backward.cpp
@@ -28,6 +29,10 @@ set(MAIN_SOURCE
         # fuel
             src/classes/fuel/rbmkFuelRod.cpp
             src/classes/fuel/fuelRegistry.cpp
+
+        # submenu
+            src/classes/submenu/submenu.cpp
+            src/classes/submenu/submenuFuelRod.cpp
 
         # columns
             src/classes/columns/columnBase.cpp
@@ -52,6 +57,7 @@ set(MAIN_HEADERS
     src/logger.h
     src/tooltip.h
     src/mathHelper.h
+    src/utils.h
 
     # libs
         src/libs/json.hpp
@@ -69,6 +75,10 @@ set(MAIN_HEADERS
         # fuel
             src/classes/fuel/rbmkFuelRod.h
             src/classes/fuel/fuelRegistry.h
+
+        # submenu
+            src/classes/submenu/submenu.h
+            src/classes/submenu/submenuFuelRod.h
 
         # columns
             src/classes/columns/columnBase.h

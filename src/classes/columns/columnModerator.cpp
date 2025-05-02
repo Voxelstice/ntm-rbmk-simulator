@@ -5,11 +5,12 @@
 
 #include "../dials.h"
 #include "../../main.h"
+#include "../../utils.h"
 
 ColumnModerator::ColumnModerator() {
     type = COLUMN_MODERATOR;
 }
 
 void ColumnModerator::draw(Vector2 columnSize, Vector2 destPos) {
-    controlPanel->drawTex(controlPanel->ui, {50, 172}, columnSize, destPos, columnSize, 4);
+    DrawTextureS(controlPanel->ui, {50, 172}, columnSize, destPos, columnSize, 4);
 }

@@ -9,6 +9,7 @@
 
 #include "../main.h"
 #include "../tooltip.h"
+#include "../utils.h"
 
 // THE COLUMN HORDE
 #include "columns/columnBlank.h"
@@ -103,9 +104,9 @@ void RBMK::draw() {
             // heat
             float heatAlpha = Clamp((float) ((column->heat-20.0) / column->maxHeat), 0.0f, 1.0f);
             float heatY = std::round(10.0f * heatAlpha);
-            controlPanel->drawTex(controlPanel->ui, {0, 182+columnSize.x-heatY}, {10, heatY}, Vector2Add(destPos, {0, columnSize.y-heatY}), {10, heatY}, 4);
+            DrawTextureS(controlPanel->ui, {0, 182+columnSize.x-heatY}, {10, heatY}, Vector2Add(destPos, {0, columnSize.y-heatY}), {10, heatY}, 4);
 
-            if (state != OFFLINE && indexFromPos(rbmkBuilder->getSelectedPosition()) == i) {
+            if (state != OFFLINE && indexFromPos(rbmkBuilder->getSelectedPosition()) == i && rbmkBuilder->submenuActive == false) {
                 std::string tooltipData = "";
                 tooltipData += rbmkBuilder->getStringFromType(column->type);
                 tooltipData += "\n";

@@ -11,6 +11,7 @@
 
 #include "../dials.h"
 #include "../../main.h"
+#include "../../utils.h"
 
 ColumnControlRod::ColumnControlRod() {
     type = COLUMN_CONTROL;
@@ -41,10 +42,10 @@ void ColumnControlRod::update() {
     }
 }
 void ColumnControlRod::draw(Vector2 columnSize, Vector2 destPos) {
-    controlPanel->drawTex(controlPanel->ui, {20, 172}, columnSize, destPos, columnSize, 4);
+    DrawTextureS(controlPanel->ui, {20, 172}, columnSize, destPos, columnSize, 4);
 
     float insertion = 8.0f-std::round((float)level * 8.0f);
-    controlPanel->drawTex(controlPanel->ui, {24, 183}, {2, insertion}, Vector2Add(destPos, {4, 1}), {2, insertion}, 4);
+    DrawTextureS(controlPanel->ui, {24, 183}, {2, insertion}, Vector2Add(destPos, {4, 1}), {2, insertion}, 4);
 }
 void ColumnControlRod::reset() {
     startingLevel = 0;

@@ -16,6 +16,11 @@
 
 #include "submenu/submenu.h"
 #include "submenu/submenuFuelRod.h"
+#include "submenu/submenuControlRod.h"
+#include "submenu/submenuControlRodAuto.h"
+#include "submenu/submenuBoiler.h"
+#include "submenu/submenuOutgasser.h"
+#include "submenu/submenuHeatex.h"
 
 RBMKBuilder::RBMKBuilder() {
     ui = LoadTexture("assets/gui/gui_rbmk_builder.png");
@@ -82,8 +87,8 @@ bool RBMKBuilder::hasSubmenu(ColumnType type) {
         case COLUMN_ABSORBER:       return false;
         case COLUMN_REFLECTOR:      return false;
         case COLUMN_OUTGASSER:      return true;
-        case COLUMN_STORAGE:        return true;
-        case COLUMN_COOLER:         return true;
+        case COLUMN_STORAGE:        return false;
+        case COLUMN_COOLER:         return false;
         case COLUMN_HEATEX:         return true;
 
         default:                    return false;
@@ -92,13 +97,11 @@ bool RBMKBuilder::hasSubmenu(ColumnType type) {
 Submenu* RBMKBuilder::makeSubmenuFromType(ColumnType type, Vector2 columnPos) {
     switch (type) {
         case COLUMN_FUEL:           return new SubmenuFuelRod(columnPos);
-        case COLUMN_CONTROL:        return new Submenu(columnPos);
-        case COLUMN_CONTROL_AUTO:   return new Submenu(columnPos);
-        case COLUMN_BOILER:         return new Submenu(columnPos);
-        case COLUMN_OUTGASSER:      return new Submenu(columnPos);
-        case COLUMN_STORAGE:        return new Submenu(columnPos);
-        case COLUMN_COOLER:         return new Submenu(columnPos);
-        case COLUMN_HEATEX:         return new Submenu(columnPos);
+        case COLUMN_CONTROL:        return new SubmenuControlRod(columnPos);
+        case COLUMN_CONTROL_AUTO:   return new SubmenuControlRodAuto(columnPos);
+        case COLUMN_BOILER:         return new SubmenuBoiler(columnPos);
+        case COLUMN_OUTGASSER:      return new SubmenuOutgasser(columnPos);
+        case COLUMN_HEATEX:         return new SubmenuHeatex(columnPos);
 
         default:                    return new Submenu(columnPos);
     }

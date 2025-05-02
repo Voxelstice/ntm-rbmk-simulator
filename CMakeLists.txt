@@ -33,6 +33,11 @@ set(MAIN_SOURCE
         # submenu
             src/classes/submenu/submenu.cpp
             src/classes/submenu/submenuFuelRod.cpp
+            src/classes/submenu/submenuControlRod.cpp
+            src/classes/submenu/submenuControlRodAuto.cpp
+            src/classes/submenu/submenuBoiler.cpp
+            src/classes/submenu/submenuOutgasser.cpp
+            src/classes/submenu/submenuHeatex.cpp
 
         # columns
             src/classes/columns/columnBase.cpp
@@ -79,6 +84,11 @@ set(MAIN_HEADERS
         # submenu
             src/classes/submenu/submenu.h
             src/classes/submenu/submenuFuelRod.h
+            src/classes/submenu/submenuControlRod.h
+            src/classes/submenu/submenuControlRodAuto.h
+            src/classes/submenu/submenuBoiler.h
+            src/classes/submenu/submenuOutgasser.h
+            src/classes/submenu/submenuHeatex.h
 
         # columns
             src/classes/columns/columnBase.h

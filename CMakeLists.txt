@@ -1,5 +1,5 @@
 ﻿cmake_minimum_required (VERSION 3.8)
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 
 project ("ntm-rbmk-simulator")
 
@@ -13,6 +13,7 @@ set(MAIN_SOURCE
     src/tooltip.cpp
     src/mathHelper.cpp
     src/utils.cpp
+    src/textureCache.cpp
 
     # libs
         src/libs/backward.cpp
@@ -63,6 +64,7 @@ set(MAIN_HEADERS
     src/tooltip.h
     src/mathHelper.h
     src/utils.h
+    src/textureCache.h
 
     # libs
         src/libs/json.hpp

@@ -3,9 +3,10 @@
 #include "submenu.h"
 #include "submenuHeatex.h"
 #include "../../utils.h"
+#include "../../textureCache.h"
 
 SubmenuHeatex::SubmenuHeatex(Vector2 m_columnPos) : Submenu(m_columnPos) {
-    ui = LoadTexture("assets/gui/gui_rbmk_heater.png");
+    ui = TexCache_Get("assets/gui/gui_rbmk_heater.png");
 }
 
 void SubmenuHeatex::open() {}
@@ -16,5 +17,5 @@ void SubmenuHeatex::draw() {
     DrawTextureS(ui, {0, 0}, {176, 110}, guiPosition, {176, 110}, 4);
 }
 void SubmenuHeatex::close() {
-    UnloadTexture(ui);
+
 }

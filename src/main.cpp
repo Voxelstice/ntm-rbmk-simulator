@@ -3,6 +3,7 @@
 #include "text.h"
 #include "logger.h"
 #include "tooltip.h"
+#include "textureCache.h"
 
 #include "classes/dials.h"
 #include "classes/rbmk.h"
@@ -86,6 +87,7 @@ int main() {
 
     RegisterFuels();
     TextLoad();
+    TexCache_Init();
 
     //----------------------------------------------------------------------------------
 
@@ -112,6 +114,7 @@ int main() {
     // De-Initialization
     //--------------------------------------------------------------------------------------
     TextUnload();
+    TexCache_UnloadAll();
 
     if (IsAudioDeviceReady()) CloseAudioDevice();
     CloseWindow();

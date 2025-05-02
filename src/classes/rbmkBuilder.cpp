@@ -111,6 +111,8 @@ void RBMKBuilder::update() {
     if (rbmkDials.varsEmbedded == true) return;
     
     if (submenuActive == true) {
+        submenu->update();
+
         if (IsKeyPressed(KEY_ESCAPE)) {
             submenu->close();
             submenuActive = false;

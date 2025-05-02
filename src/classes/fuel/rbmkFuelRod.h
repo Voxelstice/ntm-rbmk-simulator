@@ -74,6 +74,7 @@ class RBMKFuelRod {
         std::string internalName = "";
         std::string itemName = "";
         std::string fullName = "";
+        Texture2D tex = { 0 };
 
         bool active = false;
 

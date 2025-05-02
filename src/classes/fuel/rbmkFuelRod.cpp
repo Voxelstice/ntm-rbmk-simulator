@@ -6,17 +6,20 @@
 
 #include "rbmkFuelRod.h"
 #include "../../mathHelper.h"
+#include "../../textureCache.h"
 #include "../dials.h"
 
 RBMKFuelRod::RBMKFuelRod(std::string m_internalName, std::string m_fullName) {
     internalName = m_internalName;
     fullName = m_fullName;
+    tex = TexCache_Get(TextFormat("assets/fuel/%s.png", internalName.c_str()));
 }
 RBMKFuelRod::RBMKFuelRod(RBMKFuelRod* fuel) {
     // This constructor is specifically to just "clone" the fuel
     internalName = fuel->internalName;
     itemName = fuel->itemName;
     fullName = fuel->fullName;
+    tex = fuel->tex;
 
     reactivity = fuel->reactivity;
     selfRate = fuel->selfRate;
@@ -65,8 +68,6 @@ double RBMKFuelRod::burn(double inFlux) {
     }
 
     itemCoreHeat += outFlux * heat;
-
-    //printf("\ninFlux: %i\noutFlux: %i\nitemYield: %i\ncoreHeat: %i\nhullHeat: %i\n", (int)inFlux, (int)outFlux, (int)itemYield, (int)itemCoreHeat, (int)itemHullHeat);
 
     return outFlux;
 }

@@ -28,7 +28,7 @@ typedef struct RBMKDials {
 
     // program vars
     bool varsEmbedded = false;
-    bool varsSlowTicking = true; // if enabled, simulation maintains a tick rate of 20, otherwise, it's gonna go as fast as the framerate
+    bool varsSlowTicking = true; // if enabled, simulation maintains a tick rate of 20, otherwise, it's gonna go as fast as the framerate goes
 } RBMKDials;
 
 extern RBMKDials rbmkDials;

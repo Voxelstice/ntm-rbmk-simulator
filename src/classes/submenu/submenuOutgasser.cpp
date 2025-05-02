@@ -3,9 +3,10 @@
 #include "submenu.h"
 #include "submenuOutgasser.h"
 #include "../../utils.h"
+#include "../../textureCache.h"
 
 SubmenuOutgasser::SubmenuOutgasser(Vector2 m_columnPos) : Submenu(m_columnPos) {
-    ui = LoadTexture("assets/gui/gui_rbmk_outgasser.png");
+    ui = TexCache_Get("assets/gui/gui_rbmk_outgasser.png");
 }
 
 void SubmenuOutgasser::open() {}
@@ -16,5 +17,5 @@ void SubmenuOutgasser::draw() {
     DrawTextureS(ui, {0, 0}, {176, 110}, guiPosition, {176, 110}, 4);
 }
 void SubmenuOutgasser::close() {
-    UnloadTexture(ui);
+
 }

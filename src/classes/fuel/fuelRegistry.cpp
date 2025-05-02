@@ -13,12 +13,6 @@ void RegisterFuel(std::string name, RBMKFuelRod* fuel) {
 }
 
 void RegisterFuels() {
-    // i find this kind of syntax mildly interesting
-    // would have been easier if they weren't pointers
-
-    // ok this took me a while
-    // i am yet to do textures
-
     TraceLog(LOG_INFO, "RBMK: Beginning fuel initialization");
 
     RBMKFuelRod *rbmk_fuel_ueu = new RBMKFuelRod("rbmk_fuel_ueu", "Unenriched Uranium");

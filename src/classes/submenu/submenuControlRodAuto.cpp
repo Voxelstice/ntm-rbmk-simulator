@@ -3,9 +3,10 @@
 #include "submenu.h"
 #include "submenuControlRodAuto.h"
 #include "../../utils.h"
+#include "../../textureCache.h"
 
 SubmenuControlRodAuto::SubmenuControlRodAuto(Vector2 m_columnPos) : Submenu(m_columnPos) {
-    ui = LoadTexture("assets/gui/gui_rbmk_control_auto.png");
+    ui = TexCache_Get("assets/gui/gui_rbmk_control_auto.png");
 }
 
 void SubmenuControlRodAuto::open() {}
@@ -16,5 +17,5 @@ void SubmenuControlRodAuto::draw() {
     DrawTextureS(ui, {0, 0}, {176, 110}, guiPosition, {176, 110}, 4);
 }
 void SubmenuControlRodAuto::close() {
-    UnloadTexture(ui);
+
 }

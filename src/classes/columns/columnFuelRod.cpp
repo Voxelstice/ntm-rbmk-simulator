@@ -24,7 +24,7 @@ ColumnFuelRod::ColumnFuelRod() {
 
 // main
 void ColumnFuelRod::init() {
-    fuel = PrepareFuel("rbmk_fuel_ueu");
+    //fuel = PrepareFuel("rbmk_fuel_ueu");
 
     hasRod = fuel->active;
     if (hasRod == true) {

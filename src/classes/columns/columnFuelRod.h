@@ -7,6 +7,7 @@
 #include "columnBase.h"
 #include "columnFluxReceiver.h"
 #include "../fuel/rbmkFuelRod.h"
+#include "../inventory/itemSlot.h"
 
 class ColumnFuelRod : public ColumnFluxReceiver {
     public:
@@ -35,4 +36,5 @@ class ColumnFuelRod : public ColumnFluxReceiver {
         bool hasRod = false;
 
         RBMKFuelRod* fuel;
+        ItemSlot* itemSlot; // primarily just to store the item
 };

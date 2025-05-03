@@ -4,6 +4,7 @@
 #include <string>
 
 #include "submenu.h"
+#include "../inventory/itemSlot.h"
 
 class SubmenuFuelRod : public Submenu {
     public:

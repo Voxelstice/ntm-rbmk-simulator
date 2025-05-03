@@ -6,20 +6,22 @@
 
 #include <cmath>
 
-#include "../../mathHelper.h"
-
 #include "columnBase.h"
 #include "columnFuelRod.h"
 
-#include "../dials.h"
 #include "../../main.h"
 #include "../../utils.h"
+#include "../../mathHelper.h"
+#include "../../textureCache.h"
 
+#include "../dials.h"
 #include "../fuel/fuelRegistry.h"
 
 ColumnFuelRod::ColumnFuelRod() {
     type = COLUMN_FUEL;
     fuel = new RBMKFuelRod("", "");
+    itemSlot = new ItemSlot(Vector2Zero());
+    itemSlot->hasItem = false;
 }
 
 // main
@@ -35,6 +37,11 @@ void ColumnFuelRod::update() {
     hasRod = fuel->active;
 
     if (hasRod) {
+        itemSlot->hasItem = true;
+        itemSlot->item->internalName = fuel->internalName;
+        itemSlot->item->tex = fuel->tex;
+        itemSlot->item->setTooltip(fuel->getTooltip());
+
         double fluxRatioOut;
         double fluxQuantityOut;
 
@@ -69,6 +76,8 @@ void ColumnFuelRod::update() {
 
         fluxQuantity = 0.0;
         fluxFastRatio = 0.0;
+    } else {
+        itemSlot->hasItem = false;
     }
 }
 void ColumnFuelRod::draw(Vector2 columnSize, Vector2 destPos) {

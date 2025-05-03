@@ -46,13 +46,18 @@ class RBMKFuelRod {
         double xenonGenFunc(double flux);
         double xenonBurnFunc(double flux);
 
-        double getEnrichment();
-        double getPoisonLevel();
-
         // special flux curve handling exists here
         // since nothing really uses it yet, don't bother
 
+        // TYPES TO STRINGS (kinda)
+        const char* nTypeString(NType type, bool digamma);
+        const char* fluxTypeString(EnumBurnFunc func);
+
+        // GETTERS
+        double getEnrichment();
+        double getPoisonLevel();
         std::string getFuncDescription();
+        std::string getTooltip();
 
         // SETTERS
         RBMKFuelRod *setYield(double yield);
@@ -69,6 +74,8 @@ class RBMKFuelRod {
         RBMKFuelRod *setMeltingPoint(double meltingPoint);
 
         RBMKFuelRod *setNeutronTypes(NType nType, NType rType);
+
+        RBMKFuelRod *setItemName(std::string itemName);
 
         // VARIABLES
         std::string internalName = "";

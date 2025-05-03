@@ -14,7 +14,12 @@ SubmenuFuelRod::SubmenuFuelRod(Vector2 m_columnPos) : Submenu(m_columnPos) {
 }
 
 void SubmenuFuelRod::open() {}
-void SubmenuFuelRod::update() {}
+void SubmenuFuelRod::update() {
+    ColumnFuelRod* column = (ColumnFuelRod*)rbmk->getColumn(rbmk->indexFromPos(columnPos));
+    if (column->active == true) {
+        column->itemSlot->update();
+    }
+}
 void SubmenuFuelRod::draw() {
     // ALIGNMENT MALICE
     Vector2 guiPosition = {(float)GetScreenWidth() / 8 - (176 / 2), (float)GetScreenHeight() / 8 - (110 / 2)};
@@ -24,6 +29,8 @@ void SubmenuFuelRod::draw() {
     // all we have to check is if its active.
     ColumnFuelRod* column = (ColumnFuelRod*)rbmk->getColumn(rbmk->indexFromPos(columnPos));
     if (column->active == true) {
+        column->itemSlot->changePosition(Vector2Scale(Vector2Add(guiPosition, {80, 45}), 4.0f));
+
         if (column->hasRod == true) {
             DrawTextureS(ui, {176, 0}, {18, 67}, Vector2Add(guiPosition, {34, 21}), {18, 67}, 4);
 
@@ -35,6 +42,8 @@ void SubmenuFuelRod::draw() {
             int x = int(58.0f * column->fuel->getPoisonLevel());
             DrawTextureS(ui, {212, 58-(float)x}, {14, (float)x}, Vector2Add(guiPosition, {126, 82-(float)x}), {14, (float)x}, 4);
         }
+
+        column->itemSlot->draw();
     }
 }
 void SubmenuFuelRod::close() {

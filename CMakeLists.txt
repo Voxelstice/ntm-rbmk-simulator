@@ -24,6 +24,10 @@ set(MAIN_SOURCE
         src/classes/rbmkBuilder.cpp
         src/classes/controlPanel.cpp
 
+        # inventory
+            src/classes/inventory/item.cpp
+            src/classes/inventory/itemSlot.cpp
+
         # neutron
             src/classes/neutron/neutronStream.cpp
 
@@ -75,6 +79,10 @@ set(MAIN_HEADERS
         src/classes/rbmk.h
         src/classes/rbmkBuilder.h
         src/classes/controlPanel.h
+
+        # inventory
+            src/classes/inventory/item.h
+            src/classes/inventory/itemSlot.h
 
         # neutron
             src/classes/neutron/neutronStream.h

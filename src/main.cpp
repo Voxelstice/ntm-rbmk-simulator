@@ -1,6 +1,7 @@
 #include "raylib.h"
 
 #include "text.h"
+#include "audio.h"
 #include "logger.h"
 #include "tooltip.h"
 #include "textureCache.h"
@@ -88,6 +89,7 @@ int main() {
     RegisterFuels();
     TextLoad();
     TexCache_Init();
+    Audio_Init();
 
     //----------------------------------------------------------------------------------
 
@@ -115,6 +117,7 @@ int main() {
     //--------------------------------------------------------------------------------------
     TextUnload();
     TexCache_UnloadAll();
+    Audio_Deinit();
 
     if (IsAudioDeviceReady()) CloseAudioDevice();
     CloseWindow();

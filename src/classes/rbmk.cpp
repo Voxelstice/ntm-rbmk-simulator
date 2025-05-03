@@ -8,8 +8,9 @@
 #include "rbmk.h"
 
 #include "../main.h"
-#include "../tooltip.h"
+#include "../audio.h"
 #include "../utils.h"
+#include "../tooltip.h"
 
 // THE COLUMN HORDE
 #include "columns/columnBlank.h"
@@ -184,7 +185,20 @@ void RBMK::changeState(RBMKState newState) {
     state = newState;
 }
 void RBMK::meltdown() {
+    Audio_PlaySound(AUDIOSAMPLE_EXPLOSION);
     changeState(MELTED);
+}
+void RBMK::az5() {
+    if (state == RUNNING) {
+        Audio_PlaySound(AUDIOSAMPLE_SHUTDOWN);
+        for (int i = 0; i < 15*15; i++) {
+            if (columns[i]->active == false) continue;
+            if (columns[i]->type == COLUMN_CONTROL) {
+                ColumnControlRod *rod = (ColumnControlRod *)columns[i];
+                rod->setTarget(0.0f);
+            }
+        }
+    }
 }
 
 // columns

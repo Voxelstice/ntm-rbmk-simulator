@@ -85,16 +85,12 @@ void ColumnFuelRod::draw(Vector2 columnSize, Vector2 destPos) {
     DrawTextureS(controlPanel->ui, {10, 172}, columnSize, destPos, columnSize, 4);
 
     if (hasRod == true) {
-        float coreHeatY = std::round(8.0f * Clamp((float)((fuel->itemCoreHeat - 20.0) / fuel->meltingPoint), 0.0f, 1.0f));
-        float enrichmentY = std::round(8.0f * (float)(fuel->getEnrichment()));
-        float xenonY = std::round(8.0f * (float)(fuel->getPoisonLevel()/100.0));
-
-        //printf("%i\n", (int)fuel->itemYield);
+        float coreHeatY = std::floor(8.0f * Clamp((float)((fuel->itemCoreHeat - 20.0) / fuel->meltingPoint), 0.0f, 1.0f));
+        float enrichmentY = std::floor(8.0f * (float)(fuel->getEnrichment()));
+        float xenonY = std::floor(8.0f * (float)(fuel->getPoisonLevel()/100.0));
 
         DrawTextureS(controlPanel->ui, {11, 183+8-coreHeatY}, {2, coreHeatY}, Vector2Add(destPos, {1, 1+8-coreHeatY}), {2, coreHeatY}, 4); // core heat
         DrawTextureS(controlPanel->ui, {14, 183+8-enrichmentY}, {2, enrichmentY}, Vector2Add(destPos, {4, 1+8-enrichmentY}), {2, enrichmentY}, 4); // depletion
-
-        // interestingly xenon isn't even drawn at all!
         DrawTextureS(controlPanel->ui, {17, 183+8-xenonY}, {2, xenonY}, Vector2Add(destPos, {7, 1+8-xenonY}), {2, xenonY}, 4); // xenon
     }
 }

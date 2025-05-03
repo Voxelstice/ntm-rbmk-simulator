@@ -14,4 +14,7 @@ class ControlPanel {
         RBMK* rbmk;
 
         Texture2D ui;
+
+        bool az5Lid = true;
+        double lastPress = 0;
 };

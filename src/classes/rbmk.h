@@ -32,6 +32,7 @@ class RBMK {
         // states
         void changeState(RBMKState newState);
         void meltdown();
+        void az5();
 
         // columns
         ColumnBase* placeColumn(Vector2 pos, ColumnBase *column);

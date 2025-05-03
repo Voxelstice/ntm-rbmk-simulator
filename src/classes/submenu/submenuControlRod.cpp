@@ -3,11 +3,13 @@
 
 #include "submenu.h"
 #include "submenuControlRod.h"
+
+#include "../../main.h"
 #include "../../utils.h"
+#include "../../audio.h"
 #include "../../tooltip.h"
 #include "../../textureCache.h"
 
-#include "../../main.h"
 #include "../columns/columnControlRod.h"
 
 SubmenuControlRod::SubmenuControlRod(Vector2 m_columnPos) : Submenu(m_columnPos) {
@@ -27,7 +29,7 @@ void SubmenuControlRod::update() {
             Rectangle levelBtnRect = {(guiPosition.x + 118) * 4, (guiPosition.y + 26 + i * 11) * 4, 30 * 4, 11 * 4};
             if (CheckCollisionPointRec(GetMousePosition(), levelBtnRect) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
                 column->setTarget(1.0f - (i * 0.25f));
-                // and make a sound here! but i won't.
+                Audio_PlaySound(AUDIOSAMPLE_CLICK);
             }
         }
     }

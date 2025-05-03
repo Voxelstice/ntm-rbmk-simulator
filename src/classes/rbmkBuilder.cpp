@@ -10,9 +10,10 @@
 
 #include "../main.h"
 #include "../text.h"
+#include "../audio.h"
+#include "../utils.h"
 #include "../tooltip.h"
 #include "../mathHelper.h"
-#include "../utils.h"
 
 #include "submenu/submenu.h"
 #include "submenu/submenuFuelRod.h"
@@ -114,6 +115,7 @@ void RBMKBuilder::update() {
         submenu->update();
 
         if (IsKeyPressed(KEY_ESCAPE)) {
+            Audio_PlaySound(AUDIOSAMPLE_CLICK);
             submenu->close();
             submenuActive = false;
             delete submenu;
@@ -129,7 +131,10 @@ void RBMKBuilder::update() {
 
             if (CheckCollisionPointRec(GetMousePosition(), rect)) {
                 SetTooltip(getStringFromType(getTypeFromIndex(i)).c_str());
-                if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) columnIndex = i;
+                if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+                    Audio_PlaySound(AUDIOSAMPLE_CLICK);
+                    columnIndex = i;
+                }
             }
         }
     }
@@ -137,12 +142,14 @@ void RBMKBuilder::update() {
     Vector2 rbmkPos = getSelectedPosition();
     if (isMouseWithinGrid()) {
         if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && rbmk->state == OFFLINE) {
+            Audio_PlaySound(AUDIOSAMPLE_CLICK);
             rbmk->placeColumn(rbmkPos, rbmk->makeColumnFromType(getTypeFromIndex(columnIndex)));
         }
         if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)) {
             ColumnBase* column = rbmk->getColumn(rbmk->indexFromPos(rbmkPos));
             if (column->active == true) {
                 if (hasSubmenu(column->type)) {
+                    Audio_PlaySound(AUDIOSAMPLE_CLICK);
                     submenu = makeSubmenuFromType(column->type, rbmkPos);
                     submenuActive = true;
                 }

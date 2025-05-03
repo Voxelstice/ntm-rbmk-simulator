@@ -14,6 +14,7 @@ set(MAIN_SOURCE
     src/mathHelper.cpp
     src/utils.cpp
     src/textureCache.cpp
+    src/audio.cpp
 
     # libs
         src/libs/backward.cpp
@@ -27,6 +28,8 @@ set(MAIN_SOURCE
         # inventory
             src/classes/inventory/item.cpp
             src/classes/inventory/itemSlot.cpp
+
+            src/classes/inventory/fluidTank.cpp
 
         # neutron
             src/classes/neutron/neutronStream.cpp
@@ -69,6 +72,7 @@ set(MAIN_HEADERS
     src/mathHelper.h
     src/utils.h
     src/textureCache.h
+    src/audio.h
 
     # libs
         src/libs/json.hpp
@@ -83,6 +87,8 @@ set(MAIN_HEADERS
         # inventory
             src/classes/inventory/item.h
             src/classes/inventory/itemSlot.h
+
+            src/classes/inventory/fluidTank.h
 
         # neutron
             src/classes/neutron/neutronStream.h

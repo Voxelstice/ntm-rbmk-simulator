@@ -15,6 +15,7 @@
 
 SubmenuBoiler::SubmenuBoiler(Vector2 m_columnPos) : Submenu(m_columnPos) {
     ui = TexCache_Get("assets/gui/gui_rbmk_boiler.png");
+    name = "RBMK Steam Channel";
 }
 
 void SubmenuBoiler::open() {}

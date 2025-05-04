@@ -32,7 +32,13 @@ class RBMK {
         // states
         void changeState(RBMKState newState);
         void meltdown();
+
+        // other
         void az5();
+        void cycleCompressors();
+        void selectControlRods();
+        void selectGroup(ColumnColor col);
+        void assignGroup(ColumnColor col);
 
         // columns
         ColumnBase* placeColumn(Vector2 pos, ColumnBase *column);

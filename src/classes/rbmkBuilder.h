@@ -12,16 +12,29 @@ class RBMKBuilder {
     public:
         RBMKBuilder();
 
-        void update();
-        void draw();
-
+        // helper functions
         bool isMouseWithinGrid();
         Vector2 getSelectedPosition();
+
+        // selector stuff
+        void resetSelector();
+        void toggleSelectorTile(int tile);
+        void setSelectorTile(int tile, bool state);
+        bool getSelectorTile(int tile);
+
+        // column stuff
         ColumnType getTypeFromIndex(int i);
         std::string getStringFromType(ColumnType type);
+
+        // submenu stuff
         bool hasSubmenu(ColumnType type);
         Submenu* makeSubmenuFromType(ColumnType type, Vector2 columnPos);
 
+        // main
+        void update();
+        void draw();
+
+        // vars
         bool active = true;
         Texture2D ui;
 
@@ -29,4 +42,7 @@ class RBMKBuilder {
         bool submenuActive = false;
 
         int columnIndex = 0;
+
+        bool selectorMode = false;
+        bool selected[15 * 15];
 };

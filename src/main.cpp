@@ -84,7 +84,7 @@ int main() {
 
     rbmk = new RBMK();
     rbmkBuilder = new RBMKBuilder();
-    controlPanel = new ControlPanel(rbmk);
+    controlPanel = new ControlPanel();
 
     RegisterFuels();
     TextLoad();

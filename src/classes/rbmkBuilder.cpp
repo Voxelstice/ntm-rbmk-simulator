@@ -25,8 +25,11 @@
 
 RBMKBuilder::RBMKBuilder() {
     ui = LoadTexture("assets/gui/gui_rbmk_builder.png");
+
+    resetSelector();
 }
 
+// helper functions
 bool RBMKBuilder::isMouseWithinGrid() {
     Vector2 roundedPos = Vector2Floor(Vector2Subtract(Vector2Divide(GetMousePosition(), {4,4}), rbmk->columnGridPosition), 10);
     Vector2 clampedPos = Vector2Clamp(roundedPos, {-10, -10}, {150, 150});
@@ -37,6 +40,27 @@ Vector2 RBMKBuilder::getSelectedPosition() {
     Vector2 roundedPos = Vector2Floor(Vector2Subtract(Vector2Divide(GetMousePosition(), {4,4}), rbmk->columnGridPosition), 10);
     return Vector2Divide(Vector2Clamp(roundedPos, {0, 0}, {140, 140}), {10, 10});
 }
+
+// selector stuff
+void RBMKBuilder::resetSelector() {
+    for (int i = 0; i < 15*15; i++) {
+        selected[i] = false;
+    }
+}
+void RBMKBuilder::toggleSelectorTile(int tile) {
+    if (tile >= 0 && tile < 15*15) 
+        selected[tile] = !selected[tile];
+}
+void RBMKBuilder::setSelectorTile(int tile, bool state) {
+    if (tile >= 0 && tile < 15*15)
+        selected[tile] = state;
+}
+bool RBMKBuilder::getSelectorTile(int tile) {
+    if (tile >= 0 && tile < 15*15) return selected[tile];
+    else return false;
+}
+
+// column stuff
 ColumnType RBMKBuilder::getTypeFromIndex(int i) {
     switch (i) {
         // row 1
@@ -77,6 +101,7 @@ std::string RBMKBuilder::getStringFromType(ColumnType type) {
     }
 }
 
+// submenu stuff
 bool RBMKBuilder::hasSubmenu(ColumnType type) {
     switch (type) {
         case COLUMN_BLANK:          return false;
@@ -108,6 +133,7 @@ Submenu* RBMKBuilder::makeSubmenuFromType(ColumnType type, Vector2 columnPos) {
     }
 }
 
+// main
 void RBMKBuilder::update() {
     if (rbmkDials.varsEmbedded == true) return;
     
@@ -141,9 +167,16 @@ void RBMKBuilder::update() {
 
     Vector2 rbmkPos = getSelectedPosition();
     if (isMouseWithinGrid()) {
-        if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && rbmk->state == OFFLINE) {
-            Audio_PlaySound(AUDIOSAMPLE_CLICK);
-            rbmk->placeColumn(rbmkPos, rbmk->makeColumnFromType(getTypeFromIndex(columnIndex)));
+        if (selectorMode == false) {
+            if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && rbmk->state == OFFLINE) {
+                Audio_PlaySound(AUDIOSAMPLE_CLICK);
+                rbmk->placeColumn(rbmkPos, rbmk->makeColumnFromType(getTypeFromIndex(columnIndex)));
+            }
+        } else if (selectorMode == true) {
+            if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+                Audio_PlaySound(AUDIOSAMPLE_CLICK);
+                selected[rbmk->indexFromPos(rbmkPos)] = !selected[rbmk->indexFromPos(rbmkPos)];
+            }
         }
         if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)) {
             ColumnBase* column = rbmk->getColumn(rbmk->indexFromPos(rbmkPos));
@@ -156,6 +189,9 @@ void RBMKBuilder::update() {
             }
         }
     }
+
+    if (IsKeyPressed(KEY_LEFT_SHIFT) && rbmk->state == OFFLINE) selectorMode = !selectorMode;
+    else if (rbmk->state == RUNNING) selectorMode = true;
 }
 void RBMKBuilder::draw() {
     if (rbmkDials.varsEmbedded == true) {
@@ -169,7 +205,7 @@ void RBMKBuilder::draw() {
         Vector2 pos = Vector2Multiply(getSelectedPosition(), {10, 10});
 
         if (submenuActive == false) {
-            if (isMouseWithinGrid() && rbmk->state == OFFLINE)
+            if (isMouseWithinGrid() && rbmk->state == OFFLINE && selectorMode == false)
                 DrawTextureS(controlPanel->ui, {0, 192}, {10, 10}, Vector2Add(rbmk->columnGridPosition, pos), {10, 10}, 4);
         
             // that ui
@@ -183,6 +219,11 @@ void RBMKBuilder::draw() {
             }
         }
 
+        if (selectorMode == false) {
+            TextDrawAlign("Build mode", Vector2Add({244*4, (float)GetScreenHeight() - 64}, {60*2, 0}), 16.0f, BLACK, ALIGN_CENTER, ALIGN_MIDDLE);
+        } else {
+            TextDrawAlign("Select mode", Vector2Add({244*4, (float)GetScreenHeight() - 64}, {60*2, 0}), 16.0f, BLACK, ALIGN_CENTER, ALIGN_MIDDLE);
+        }
         TextDrawAlign("Offline", Vector2Add({244*4, (float)GetScreenHeight() - 48}, {60*2, 0}), 16.0f, BLACK, ALIGN_CENTER, ALIGN_MIDDLE);
     } else if (rbmk->state == RUNNING) {
         DrawTextureS(ui, {60, 0}, {60, 172}, {244, 0}, {60, 172}, 4);
@@ -201,5 +242,18 @@ void RBMKBuilder::draw() {
     if (submenuActive == true) {
         DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), Fade(BLACK, 0.5f));
         submenu->draw();
+        TextDrawAlign(submenu->name.c_str(), {(float)GetScreenWidth()/2, (float)GetScreenHeight()/2 - (110*1.65f)}, 24.0f, BLACK, ALIGN_CENTER, ALIGN_MIDDLE);
+        TextDrawAlign("ESC to close", {(float)GetScreenWidth()/2, (float)GetScreenHeight() - 64}, 16.0f, WHITE, ALIGN_CENTER, ALIGN_MIDDLE);
+    } else {
+        if (selectorMode == true) {
+            for (int i = 0; i < 15*15; i++) {            
+                int x = i % 15;
+                int y = i / 15;
+
+                if (selected[i] == true) {
+                    DrawTextureS(controlPanel->ui, {0, 192}, {10, 10}, Vector2Add(rbmk->columnGridPosition, {(float)x*10, (float)y*10}), {10, 10}, 4);
+                }
+            }
+        }
     }
 }

@@ -188,16 +188,49 @@ void RBMK::meltdown() {
     Audio_PlaySound(AUDIOSAMPLE_EXPLOSION);
     changeState(MELTED);
 }
+
+// other
 void RBMK::az5() {
     if (state == RUNNING) {
         Audio_PlaySound(AUDIOSAMPLE_SHUTDOWN);
         for (int i = 0; i < 15*15; i++) {
             if (columns[i]->active == false) continue;
             if (columns[i]->type == COLUMN_CONTROL) {
-                ColumnControlRod *rod = (ColumnControlRod *)columns[i];
+                ColumnControlRod* rod = (ColumnControlRod*) columns[i];
                 rod->setTarget(0.0f);
             }
         }
+    }
+}
+void RBMK::cycleCompressors() {
+    for (int i = 0; i < 15*15; i++) {
+        if (columns[i]->active == false) continue;
+        if (columns[i]->type == COLUMN_BOILER) {
+            ColumnBoiler* boiler = (ColumnBoiler*) columns[i];
+            boiler->cycleCompressor();
+        }
+    }
+}
+void RBMK::selectControlRods() {
+    for (int i = 0; i < 15*15; i++) {
+        if (columns[i]->active == false) continue;
+        if (columns[i]->type == COLUMN_CONTROL)
+            rbmkBuilder->setSelectorTile(i, true);
+    }
+}
+void RBMK::selectGroup(ColumnColor col) {
+    for (int i = 0; i < 15*15; i++) {
+        if (columns[i]->active == false) continue;
+        if (columns[i]->type == COLUMN_CONTROL && columns[i]->col == col)
+            rbmkBuilder->setSelectorTile(i, true);
+    }
+}
+void RBMK::assignGroup(ColumnColor col) {
+    for (int i = 0; i < 15*15; i++) {
+        if (rbmkBuilder->getSelectorTile(i) == false) continue;
+        if (columns[i]->active == false) continue;
+        if (columns[i]->type == COLUMN_CONTROL)
+            columns[i]->col = col;
     }
 }
 

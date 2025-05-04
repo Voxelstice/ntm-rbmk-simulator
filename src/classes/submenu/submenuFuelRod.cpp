@@ -11,6 +11,7 @@
 
 SubmenuFuelRod::SubmenuFuelRod(Vector2 m_columnPos) : Submenu(m_columnPos) {
     ui = TexCache_Get("assets/gui/gui_rbmk_element.png");
+    name = "RBMK Fuel Rod";
 }
 
 void SubmenuFuelRod::open() {}

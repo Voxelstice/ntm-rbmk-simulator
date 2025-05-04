@@ -8,7 +8,6 @@
 
 // main cache mechanism
 std::map<const char*, Texture2D> cache;
-
 Texture2D defaultTexture = { 0 };
 
 // internal functions

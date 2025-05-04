@@ -13,6 +13,4 @@ class SubmenuControlRod : public Submenu {
         void update();
         void draw();
         void close();
-
-        std::string name = "";
 };

@@ -7,6 +7,7 @@
 
 SubmenuControlRodAuto::SubmenuControlRodAuto(Vector2 m_columnPos) : Submenu(m_columnPos) {
     ui = TexCache_Get("assets/gui/gui_rbmk_control_auto.png");
+    name = "RBMK Automatic Control Rods";
 }
 
 void SubmenuControlRodAuto::open() {}

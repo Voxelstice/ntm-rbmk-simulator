@@ -7,6 +7,7 @@
 
 SubmenuOutgasser::SubmenuOutgasser(Vector2 m_columnPos) : Submenu(m_columnPos) {
     ui = TexCache_Get("assets/gui/gui_rbmk_outgasser.png");
+    name = "RBMK Irradiation Channel";
 }
 
 void SubmenuOutgasser::open() {}

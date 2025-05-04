@@ -120,3 +120,16 @@ std::vector<std::string> ColumnBase::getInfo() {
     vector.clear();
     return vector;
 }
+
+// other
+std::string columnColorToStr(ColumnColor color) {
+    switch (color) {
+        case COLUMNCOLOR_RED:       return "Red";
+        case COLUMNCOLOR_YELLOW:    return "Yellow";
+        case COLUMNCOLOR_GREEN:     return "Green";
+        case COLUMNCOLOR_BLUE:      return "Blue";
+        case COLUMNCOLOR_PURPLE:    return "Purple";
+
+        default:                    return "None";
+    }
+}

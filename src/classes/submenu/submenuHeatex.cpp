@@ -7,6 +7,7 @@
 
 SubmenuHeatex::SubmenuHeatex(Vector2 m_columnPos) : Submenu(m_columnPos) {
     ui = TexCache_Get("assets/gui/gui_rbmk_heater.png");
+    name = "RBMK Fluid Heater";
 }
 
 void SubmenuHeatex::open() {}

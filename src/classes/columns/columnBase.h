@@ -23,6 +23,17 @@ enum ColumnType {
     COLUMN_HEATEX = 130
 };
 
+// this is actually a control rod thing, nonetheless im gonna make it "global"
+enum ColumnColor {
+    COLUMNCOLOR_NONE = -1,
+
+    COLUMNCOLOR_RED = 0,
+    COLUMNCOLOR_YELLOW = 1,
+    COLUMNCOLOR_GREEN = 2,
+    COLUMNCOLOR_BLUE = 3,
+    COLUMNCOLOR_PURPLE = 4,
+};
+
 class ColumnBase {
     public:
         ColumnBase();
@@ -52,6 +63,7 @@ class ColumnBase {
         bool active = false;
         bool moderated = false;
         ColumnType type = COLUMN_NONE;
+        ColumnColor col = COLUMNCOLOR_NONE;
 
         Vector2 pos = {0, 0};
 
@@ -65,3 +77,6 @@ class ColumnBase {
         int maxWater = 16000;
         int maxSteam = 16000;
 };
+
+// other
+std::string columnColorToStr(ColumnColor color);

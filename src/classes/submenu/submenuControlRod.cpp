@@ -14,6 +14,7 @@
 
 SubmenuControlRod::SubmenuControlRod(Vector2 m_columnPos) : Submenu(m_columnPos) {
     ui = TexCache_Get("assets/gui/gui_rbmk_control.png");
+    name = "RBMK Control Rods";
 }
 
 void SubmenuControlRod::open() {}
@@ -26,7 +27,14 @@ void SubmenuControlRod::update() {
         SetTooltipOnHover(TextFormat("%i%%", int(column->level * 100)), rodRect);
 
         for (int i = 0; i < 5; i++) {
-            Rectangle levelBtnRect = {(guiPosition.x + 118) * 4, (guiPosition.y + 26 + i * 11) * 4, 30 * 4, 11 * 4};
+            Rectangle colorBtnRect = {(guiPosition.x + 28) * 4, (guiPosition.y + 26 + i * 11) * 4, 12 * 4, 10 * 4};
+            Rectangle levelBtnRect = {(guiPosition.x + 118) * 4, (guiPosition.y + 26 + i * 11) * 4, 30 * 4, 10 * 4};
+
+            if (CheckCollisionPointRec(GetMousePosition(), colorBtnRect) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+                Audio_PlaySound(AUDIOSAMPLE_CLICK);
+                if (column->col == i) column->col = COLUMNCOLOR_NONE;
+                else column->col = (ColumnColor)i;
+            }
             if (CheckCollisionPointRec(GetMousePosition(), levelBtnRect) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
                 column->setTarget(1.0f - (i * 0.25f));
                 Audio_PlaySound(AUDIOSAMPLE_CLICK);
@@ -43,6 +51,9 @@ void SubmenuControlRod::draw() {
     if (column->active == true) {
         int height = int(56.0f * (1.0f - column->level));
         if (height > 0) DrawTextureS(ui, {176, 56 - (float)height}, {8, (float)height}, Vector2Add(guiPosition, {75, 29}), {8, (float)height}, 4);
+
+        if (column->col != COLUMNCOLOR_NONE) 
+            DrawTextureS(ui, {184, float(column->col * 10)}, {12, 10}, Vector2Add(guiPosition, {28, 26 + float(column->col*11)}), {12, 10}, 4);
     }
 }
 void SubmenuControlRod::close() {

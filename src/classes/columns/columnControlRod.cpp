@@ -46,6 +46,8 @@ void ColumnControlRod::draw(Vector2 columnSize, Vector2 destPos) {
 
     float insertion = 8.0f-std::round((float)level * 8.0f);
     DrawTextureS(controlPanel->ui, {24, 183}, {2, insertion}, Vector2Add(destPos, {4, 1}), {2, insertion}, 4);
+
+    if (col != COLUMNCOLOR_NONE) DrawTextureS(controlPanel->ui, {float((int)col * 10), 202}, {10, 10}, destPos, {10, 10}, 4);
 }
 void ColumnControlRod::reset() {
     startingLevel = 0;

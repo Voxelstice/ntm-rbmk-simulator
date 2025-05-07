@@ -46,7 +46,6 @@ void TexCache_Unload(const char* path) {
 
 void TexCache_UnloadAll() {
     for (const auto& pair : cache) {
-        // still segfaults by the way
         TraceLog(LOG_INFO, TextFormat("TEXCCACHE: Unloading %s", pair.first.c_str()));
         UnloadTexture(cache[pair.first]);
     }

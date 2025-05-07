@@ -63,20 +63,32 @@ void RBMK::updateControl() {
 }
 void RBMK::update() {
     if (state == RUNNING) {
-        // update columns
+        // reset stuff
         radiationEmitted = 0;
-        streams.clear();
+
+        // update cooling loop
+        coolingLoop->update();
+
+        // update columns
+        double flux = 0;
         for (int i = 0; i < 15*15; i++) {
             if (columns[i]->active == false) continue;
 
             columns[i]->baseUpdate();
             columns[i]->update();
+
+            if (columns[i]->type == COLUMN_FUEL) {
+                ColumnFuelRod* rod = (ColumnFuelRod*) columns[i];
+                flux += rod->lastFluxQuantity;
+            }
         }
+        //printf("%i\n", (int)flux);
 
         // update streams
         for (NeutronStream* stream : streams) {
             stream->runStreamInteraction();
         }
+        streams.clear();
     } else if (state == MELTED) {
 
     } else {
@@ -161,6 +173,8 @@ void RBMK::emitRadiation(double rad) {
 // states
 void RBMK::changeState(RBMKState newState) {
     if (newState == RUNNING) {
+        coolingLoop->reset();
+
         for (int i = 0; i < 15*15; i++) {
             if (columns[i]->active == false) continue;
             if (columns[i]->type == COLUMN_NONE) {
@@ -168,6 +182,11 @@ void RBMK::changeState(RBMKState newState) {
                 continue;
             }
 
+            // reset just incase
+            columns[i]->baseReset();
+            columns[i]->reset();
+
+            // then init
             columns[i]->baseInit();
             columns[i]->init();
         }

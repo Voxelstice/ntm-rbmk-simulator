@@ -16,6 +16,8 @@
 #include "../mathHelper.h"
 
 #include "submenu/submenu.h"
+#include "submenu/submenuAbout.h"
+#include "submenu/submenuCooling.h"
 #include "submenu/submenuFuelRod.h"
 #include "submenu/submenuControlRod.h"
 #include "submenu/submenuControlRodAuto.h"
@@ -151,6 +153,27 @@ void RBMKBuilder::update() {
     }
 
     if (rbmk->state == OFFLINE) {
+        Rectangle aboutRect = { (244+7)*4, 56*4, 40, 40 };
+        SetTooltipOnHover("About NTM RBMK Simulator", aboutRect);
+        if (CheckCollisionPointRec(GetMousePosition(), aboutRect) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+            Audio_PlaySound(AUDIOSAMPLE_CLICK);
+
+            submenu = new SubmenuAbout();
+            submenuActive = true;
+        }
+
+        Rectangle coolingRect = { (244+19)*4, 56*4, 40, 40 };
+        SetTooltipOnHover("Cooling Loop", coolingRect);
+        if (CheckCollisionPointRec(GetMousePosition(), coolingRect) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+            Audio_PlaySound(AUDIOSAMPLE_CLICK);
+
+            submenu = new SubmenuCooling();
+            submenuActive = true;
+        }
+
+        SetTooltipOnHover("Export", { (244+31)*4, 56*4, 40, 40 });
+        SetTooltipOnHover("Import", { (244+43)*4, 56*4, 40, 40 });
+
         for (int y = 0; y < 4; y++) {
             for (int x = 0; x < 4; x++) {
                 int i = y * 4 + x;

@@ -9,6 +9,7 @@
 #include "classes/dials.h"
 #include "classes/rbmk.h"
 #include "classes/rbmkBuilder.h"
+#include "classes/coolingLoop.h"
 #include "classes/controlPanel.h"
 
 #include "classes/fuel/fuelRegistry.h"
@@ -20,6 +21,7 @@
 RBMK* rbmk;
 RBMKBuilder* rbmkBuilder;
 ControlPanel* controlPanel;
+CoolingLoop* coolingLoop;
 
 double tickRate;
 double nextTick;
@@ -62,7 +64,7 @@ int main() {
     Logger_init();
 
     TraceLog(LOG_INFO, "Application started");
-    TraceLog(LOG_INFO, "Running version 0.0.1a");
+    TraceLog(LOG_INFO, "Running version 0.1a");
     TraceLog(LOG_INFO, "NTM RBMK SIMULATOR - A SIMULATOR MADE BY VOXELSTICE");
     TraceLog(LOG_INFO, "HBM'S NUCLEAR TECH MOD MADE BY HBMMODS - PLAY IT IMMEDIATELY");
     TraceLog(LOG_INFO, "----------------------------------------------------------------------------------");
@@ -85,6 +87,7 @@ int main() {
     rbmk = new RBMK();
     rbmkBuilder = new RBMKBuilder();
     controlPanel = new ControlPanel();
+    coolingLoop = new CoolingLoop();
 
     TextLoad();
     TexCache_Init();

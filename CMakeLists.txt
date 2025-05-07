@@ -24,6 +24,7 @@ set(MAIN_SOURCE
         src/classes/rbmk.cpp
         src/classes/rbmkBuilder.cpp
         src/classes/controlPanel.cpp
+        src/classes/coolingLoop.cpp
 
         # inventory
             src/classes/inventory/item.cpp
@@ -40,6 +41,8 @@ set(MAIN_SOURCE
 
         # submenu
             src/classes/submenu/submenu.cpp
+            src/classes/submenu/submenuAbout.cpp
+            src/classes/submenu/submenuCooling.cpp
             src/classes/submenu/submenuFuelRod.cpp
             src/classes/submenu/submenuControlRod.cpp
             src/classes/submenu/submenuControlRodAuto.cpp
@@ -83,6 +86,7 @@ set(MAIN_HEADERS
         src/classes/rbmk.h
         src/classes/rbmkBuilder.h
         src/classes/controlPanel.h
+        src/classes/coolingLoop.h
 
         # inventory
             src/classes/inventory/item.h
@@ -99,6 +103,8 @@ set(MAIN_HEADERS
 
         # submenu
             src/classes/submenu/submenu.h
+            src/classes/submenu/submenuAbout.h
+            src/classes/submenu/submenuCooling.h
             src/classes/submenu/submenuFuelRod.h
             src/classes/submenu/submenuControlRod.h
             src/classes/submenu/submenuControlRodAuto.h

@@ -46,6 +46,7 @@ void NeutronStream::runStreamInteraction() {
     // god i do sure hope this doesn't cause problems
     ColumnFluxReceiver* originColumn = (ColumnFluxReceiver*) rbmk->getColumn(rbmk->indexFromPos(origin));
 
+    Vector2 lastPos = Vector2Zero();
     for (int i = 0; i < fluxRange; i++) {
         if (fluxQuantity == 0) return;
 
@@ -60,67 +61,71 @@ void NeutronStream::runStreamInteraction() {
             continue;
         }
 
+        lastPos = pos;
+
         // i don't trust c++ enough to do this
         // but im doing it anyway
         // if this causes segfaults feel free to yell
-        switch (column->type) {
-            case COLUMN_FUEL_SIM:
-            case COLUMN_FUEL: {
-                ColumnFuelRod* rod = (ColumnFuelRod*) column;
-                if (rod->hasRod == true) {
-                    rod->receiveFlux(this);
-                    return;
-                }
+
+        // this used to be a switch block
+        // now its just a if statement block
+
+        if (column->type == COLUMN_MODERATOR || column->moderated == true) {
+            moderatedCount++;
+            moderateStream();
+        }
+
+        // the flux receivers are separate things
+        if (column->type == COLUMN_FUEL || column->type == COLUMN_FUEL_SIM) {
+            ColumnFuelRod* rod = (ColumnFuelRod*) column;
+            if (rod->hasRod == true) {
+                rod->receiveFlux(this);
                 return;
             }
-            
-            case COLUMN_OUTGASSER: {
-                ColumnOutgasser* outgasser = (ColumnOutgasser*) column;
-                if (outgasser->canProcess()) {
-                    outgasser->receiveFlux(this);
-                    return;
-                }
-                return;
-            }
-
-            case COLUMN_CONTROL:
-            case COLUMN_CONTROL_AUTO: {
-                ColumnControlRod* control = (ColumnControlRod*) column;
-                if (control->level > 0.0) {
-                    fluxQuantity *= control->getMulti();
-                    continue;
-                }
-                return;
-            }
-
-            case COLUMN_REFLECTOR: {
-                //ColumnReflector* reflector = (ColumnReflector*) column;
-                if (originColumn->moderated == true) moderatedCount++;
-
-                if (fluxRatio > 0 && moderatedCount > 0) {
-                    for (int i = 0; i < moderatedCount; i++) {
-                        moderateStream();
-                    }
-                }
-
-                if (rbmkDials.dialReflectorEfficiency != 1.0) {
-                    fluxQuantity *= rbmkDials.dialReflectorEfficiency;
-                    continue;
-                }
-
-                originColumn->receiveFlux(this);
-                return;
-            }
-
-            case COLUMN_ABSORBER: {
-                if(rbmkDials.dialAbsorberEfficiency == 1) return;
-                fluxQuantity *= rbmkDials.dialAbsorberEfficiency;
+        } else if (column->type == COLUMN_OUTGASSER) {
+            ColumnOutgasser* outgasser = (ColumnOutgasser*) column;
+            if (outgasser->canProcess()) {
+                outgasser->receiveFlux(this);
                 return;
             }
         }
+
+        // normal stuff
+        if (column->type == COLUMN_CONTROL || column->type == COLUMN_CONTROL_AUTO) {
+            ColumnControlRod* control = (ColumnControlRod*) column;
+            if (control->level > 0.0) {
+                fluxQuantity *= control->getMulti();
+                continue;
+            }
+            return;
+        } else if (column->type == COLUMN_REFLECTOR) {
+            if (originColumn->moderated == true) moderatedCount++;
+
+            if (fluxRatio > 0 && moderatedCount > 0) {
+                for (int i = 0; i < moderatedCount; i++)
+                    moderateStream();
+            }
+
+            if (rbmkDials.dialReflectorEfficiency != 1.0) {
+                fluxQuantity *= rbmkDials.dialReflectorEfficiency;
+                continue;
+            }
+
+            originColumn->receiveFlux(this);
+            return;
+        } else if (column->type == COLUMN_ABSORBER) {
+            if(rbmkDials.dialAbsorberEfficiency == 1) return;
+            fluxQuantity *= rbmkDials.dialAbsorberEfficiency;
+        }
     }
 
-    // there's probably that control rod bug...
+    ColumnBase* lastColumn = rbmk->getColumn(rbmk->indexFromPos(lastPos));
+    if (lastColumn->active == true && (lastColumn->type == COLUMN_CONTROL || lastColumn->type == COLUMN_CONTROL_AUTO)) {
+        ColumnControlRod* control = (ColumnControlRod*) lastColumn;
+        if (control->level > 0.0) {
+            fluxQuantity *= control->getMulti();
+        }
+    }
 }
 void NeutronStream::moderateStream() {
     fluxRatio *= (1.0 - rbmkDials.dialModeratorEfficiency);

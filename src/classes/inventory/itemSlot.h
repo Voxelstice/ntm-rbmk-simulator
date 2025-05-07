@@ -22,6 +22,7 @@ class ItemSlot {
 
         void changePosition(Vector2 m_position);
         void setGetItems(std::function<std::vector<PickerItem>()> newFunc);
+        void setItemPicked(std::function<void(std::string)> newFunc);
 
         void update();
         void draw();
@@ -32,8 +33,13 @@ class ItemSlot {
         Item* item;
 
         bool itemPicker = false;
-        bool getItemsReady = false;
         int itemPickerOffset = 0;
-        std::function<std::vector<PickerItem>()> getItems;
         std::vector<PickerItem> pickerItems;
+
+        // lambdas
+        bool getItemsReady = false;
+        std::function<std::vector<PickerItem>()> getItems;
+
+        bool itemPickedReady = false;
+        std::function<void(std::string)> itemPicked;
 };

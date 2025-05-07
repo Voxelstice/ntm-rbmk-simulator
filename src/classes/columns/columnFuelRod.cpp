@@ -23,13 +23,21 @@ ColumnFuelRod::ColumnFuelRod() {
     itemSlot = new ItemSlot(Vector2Zero());
     itemSlot->hasItem = false;
     
+    auto ItemPicked = [this](std::string internalName){
+        std::string newStr = std::string(internalName.c_str());
+        fuel = PrepareFuel(newStr);
+        fuel->reset();
+
+        itemSlot->setItem(new Item(itemSlot->position, fuel->internalName, fuel->tex));
+        itemSlot->item->setTooltip(fuel->getTooltip());
+    };
+
     itemSlot->setGetItems(GetFuelItemsLambda());
+    itemSlot->setItemPicked(ItemPicked);
 }
 
 // main
 void ColumnFuelRod::init() {
-    //fuel = PrepareFuel("rbmk_fuel_ueu");
-
     hasRod = fuel->active;
     if (hasRod == true) {
         fuel->reset();
@@ -88,8 +96,8 @@ void ColumnFuelRod::draw(Vector2 columnSize, Vector2 destPos) {
 
     if (hasRod == true) {
         float coreHeatY = std::floor(8.0f * Clamp((float)((fuel->itemCoreHeat - 20.0) / fuel->meltingPoint), 0.0f, 1.0f));
-        float enrichmentY = std::floor(8.0f * (float)(fuel->getEnrichment()));
-        float xenonY = std::floor(8.0f * (float)(fuel->getPoisonLevel()/100.0));
+        float enrichmentY = std::round(8.0f * (float)(fuel->getEnrichment()));
+        float xenonY = std::floor(8.0f * (float)(fuel->getPoisonLevel()));
 
         DrawTextureS(controlPanel->ui, {11, 183+8-coreHeatY}, {2, coreHeatY}, Vector2Add(destPos, {1, 1+8-coreHeatY}), {2, coreHeatY}, 4); // core heat
         DrawTextureS(controlPanel->ui, {14, 183+8-enrichmentY}, {2, enrichmentY}, Vector2Add(destPos, {4, 1+8-enrichmentY}), {2, enrichmentY}, 4); // depletion
@@ -133,9 +141,11 @@ std::vector<std::string> ColumnFuelRod::getInfo() {
 
     if (hasRod == true) {
         vector.push_back("Depletion: " + std::string(TextFormat("%.3f", (1.0-fuel->getEnrichment())*100.0)) + "%");
-        vector.push_back("Xenon poison: " + std::string(TextFormat("%.3f", fuel->getPoisonLevel())) + "%");
+        vector.push_back("Xenon poison: " + std::string(TextFormat("%.3f", fuel->getPoisonLevel()*100.0)) + "%");
         vector.push_back("Core temperature: " + std::string(TextFormat("%.1f", fuel->itemCoreHeat)) + " C");
         vector.push_back("Skin temperature: " + std::string(TextFormat("%.1f", fuel->itemHullHeat)) + " C / " + std::string(TextFormat("%.1f", fuel->meltingPoint)) + " C");
+        vector.push_back("flux slow: " + std::string(TextFormat("%.1f", fluxQuantity * (1 - fluxFastRatio))));
+        vector.push_back("flux fast: " + std::string(TextFormat("%.1f", fluxQuantity * (fluxFastRatio))));
     }
     return vector;
 }

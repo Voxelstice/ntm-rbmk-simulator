@@ -8,6 +8,7 @@ typedef enum FluidType {
     FLUID_NONE,
 
     FLUID_WATER,
+    FLUID_SPENTSTEAM,
     FLUID_STEAM,
     FLUID_HOTSTEAM,
     FLUID_SUPERHOTSTEAM,

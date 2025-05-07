@@ -35,6 +35,10 @@ void ItemSlot::setGetItems(std::function<std::vector<PickerItem>()> newFunc) {
     getItemsReady = true;
     getItems = newFunc;
 }
+void ItemSlot::setItemPicked(std::function<void(std::string)> newFunc) {
+    itemPickedReady = true;
+    itemPicked = newFunc;
+}
 
 void ItemSlot::update() {
     if (hasItem == true && itemPicker == false)
@@ -80,7 +84,13 @@ void ItemSlot::update() {
                 DrawRectangleRec(itemRect, Fade(WHITE, 0.5f));
                 SetTooltip(item.tooltip);
                 if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+                    if (itemPickedReady == true) {
+                        itemPicked(item.internal);
+                    }
                     Audio_PlaySound(AUDIOSAMPLE_CLICK);
+                    itemPicker = false;
+                    pickerItems.clear();
+                    return;
                 }
             }
         }

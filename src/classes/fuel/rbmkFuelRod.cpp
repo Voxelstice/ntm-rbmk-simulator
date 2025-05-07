@@ -20,7 +20,7 @@ RBMKFuelRod::RBMKFuelRod(RBMKFuelRod* fuel) {
     internalName = fuel->internalName;
     itemName = fuel->itemName;
     fullName = fuel->fullName;
-    tex = fuel->tex;
+    tex = TexCache_Get(TextFormat("assets/fuel/%s.png", fuel->internalName.c_str()));
 
     reactivity = fuel->reactivity;
     selfRate = fuel->selfRate;
@@ -161,6 +161,8 @@ const char* RBMKFuelRod::nTypeString(NType type, bool digamma) {
             case NTYPE_FAST:    return "Elliptic non-euclidean shapes";
         }
     }
+
+    return "ERROR";
 }
 const char* RBMKFuelRod::fluxTypeString(EnumBurnFunc func) {
     switch (func) {
@@ -173,6 +175,8 @@ const char* RBMKFuelRod::fluxTypeString(EnumBurnFunc func) {
         case BURNFUNC_LINEAR:       return "DANGEROUS / LINEAR";
         case BURNFUNC_QUADRATIC:    return "DANGEROUS / QUADRATIC";
         case BURNFUNC_EXPERIMENTAL: return "EXPERIMENTAL / SINE SLOPE";
+
+        default:                    return "ERROR";
     }
 }
 

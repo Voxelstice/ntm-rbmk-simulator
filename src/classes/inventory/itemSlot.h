@@ -3,7 +3,15 @@
 #include "raylib.h"
 #include "raymath.h"
 
+#include <functional>
+
 #include "item.h"
+
+typedef struct PickerItem {
+    std::string internal;
+    std::string tooltip;
+    Texture2D tex;
+} PickerItem;
 
 class ItemSlot {
     public:
@@ -13,6 +21,7 @@ class ItemSlot {
         void removeItem();
 
         void changePosition(Vector2 m_position);
+        void setGetItems(std::function<std::vector<PickerItem>()> newFunc);
 
         void update();
         void draw();
@@ -21,4 +30,10 @@ class ItemSlot {
 
         bool hasItem = false;
         Item* item;
+
+        bool itemPicker = false;
+        bool getItemsReady = false;
+        int itemPickerOffset = 0;
+        std::function<std::vector<PickerItem>()> getItems;
+        std::vector<PickerItem> pickerItems;
 };

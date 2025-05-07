@@ -20,7 +20,7 @@ RBMKFuelRod::RBMKFuelRod(RBMKFuelRod* fuel) {
     internalName = fuel->internalName;
     itemName = fuel->itemName;
     fullName = fuel->fullName;
-    tex = TexCache_Get(TextFormat("assets/fuel/%s.png", fuel->internalName.c_str()));
+    tex = fuel->tex;
 
     reactivity = fuel->reactivity;
     selfRate = fuel->selfRate;
@@ -194,7 +194,7 @@ std::string RBMKFuelRod::getFuncDescription() {
             break;
         case BURNFUNC_PLATEU:       func = "(1 - e^(-%1s / 25)) * %2s";
             break;
-        case BURNFUNC_ARCH:         func = "(%1s - %1s^2 / 10000) / 100 * %2s [0;∞]";
+        case BURNFUNC_ARCH:         func = "(%1s - %1s^2 / 10000) / 100 * %2s [0;inf]";
             break;
         case BURNFUNC_SIGMOID:      func = "%2s / (1 + e^(-(%1s - 50) / 10))";
             break;
@@ -231,7 +231,7 @@ std::string RBMKFuelRod::getTooltip() {
     strs.push_back(fullName); // this should be in grey but i don't have a formatting system
 
     // due to raylib text limitations
-    // the fractional 1/2 and small top 2 has to be regular characters instead
+    // the fractional 1/2, small top 2 and infinity has to be regular characters instead
 
     if (internalName == "rbmk_fuel_drx") {
         if (itemHullHeat >= 50 || itemCoreHeat >= 50) strs.push_back("Cool in a Spent Fuel Pool Drum");

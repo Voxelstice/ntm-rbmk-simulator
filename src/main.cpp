@@ -86,10 +86,11 @@ int main() {
     rbmkBuilder = new RBMKBuilder();
     controlPanel = new ControlPanel();
 
-    RegisterFuels();
     TextLoad();
     TexCache_Init();
     Audio_Init();
+
+    RegisterFuels();
 
     //----------------------------------------------------------------------------------
 

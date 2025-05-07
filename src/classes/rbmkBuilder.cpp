@@ -150,16 +150,18 @@ void RBMKBuilder::update() {
         return;
     }
 
-    for (int y = 0; y < 4; y++) {
-        for (int x = 0; x < 4; x++) {
-            int i = y * 4 + x;
-            Rectangle rect = { (244+10+(10*(float)x))*4, (11+(10*(float)y))*4, 40, 40 };
+    if (rbmk->state == OFFLINE) {
+        for (int y = 0; y < 4; y++) {
+            for (int x = 0; x < 4; x++) {
+                int i = y * 4 + x;
+                Rectangle rect = { (244+10+(10*(float)x))*4, (11+(10*(float)y))*4, 40, 40 };
 
-            if (CheckCollisionPointRec(GetMousePosition(), rect)) {
-                SetTooltip(getStringFromType(getTypeFromIndex(i)).c_str());
-                if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-                    Audio_PlaySound(AUDIOSAMPLE_CLICK);
-                    columnIndex = i;
+                if (CheckCollisionPointRec(GetMousePosition(), rect)) {
+                    SetTooltip(getStringFromType(getTypeFromIndex(i)).c_str());
+                    if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+                        Audio_PlaySound(AUDIOSAMPLE_CLICK);
+                        columnIndex = i;
+                    }
                 }
             }
         }

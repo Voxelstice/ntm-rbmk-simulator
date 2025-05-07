@@ -22,6 +22,8 @@ ColumnFuelRod::ColumnFuelRod() {
     fuel = new RBMKFuelRod("", "");
     itemSlot = new ItemSlot(Vector2Zero());
     itemSlot->hasItem = false;
+    
+    itemSlot->setGetItems(GetFuelItemsLambda());
 }
 
 // main

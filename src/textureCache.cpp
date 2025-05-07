@@ -4,10 +4,12 @@
 // is it really a "cache" though? like this might be just considered storing textures in memory
 
 #include "raylib.h"
+
+#include <string>
 #include <map>
 
 // main cache mechanism
-std::map<const char*, Texture2D> cache;
+static std::map<std::string, Texture2D> cache;
 Texture2D defaultTexture = { 0 };
 
 // internal functions
@@ -28,8 +30,7 @@ void TexCache_Load(const char* path) {
     if (TexCache_Exists(path) == false) {
         if (FileExists(path)) {
             TraceLog(LOG_INFO, TextFormat("TEXCCACHE: Loading %s", path));
-            cache[path] = LoadTexture(path);
-            //cache.insert(path, LoadTexture(path));
+            cache.emplace(path, LoadTexture(path));
         } else {
             TraceLog(LOG_INFO, TextFormat("TEXCCACHE: %s does not exist", path));
         }
@@ -45,8 +46,8 @@ void TexCache_Unload(const char* path) {
 
 void TexCache_UnloadAll() {
     for (const auto& pair : cache) {
-        // We're actually going to be doing it like this because... it segfaults.
-        TraceLog(LOG_INFO, TextFormat("TEXCCACHE: Unloading %s", pair.first));
+        // still segfaults by the way
+        TraceLog(LOG_INFO, TextFormat("TEXCCACHE: Unloading %s", pair.first.c_str()));
         UnloadTexture(cache[pair.first]);
     }
     cache.clear();

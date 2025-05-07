@@ -2,12 +2,15 @@
 
 #include <map>
 #include <string>
+#include <vector>
 
+#include "../inventory/itemSlot.h"
 #include "rbmkFuelRod.h"
 
 std::map<std::string, RBMKFuelRod*> fuelRegistry;
 
 void RegisterFuel(std::string name, RBMKFuelRod* fuel) {
+    fuel->reset();
     fuelRegistry.emplace(name, fuel);
     TraceLog(LOG_INFO, TextFormat("RBMK: - %s", name.c_str()));
 }
@@ -80,8 +83,8 @@ void RegisterFuels() {
         ->setMeltingPoint(2744)
         ->setItemName("MEP-239 RBMK Rod");
 
-    RBMKFuelRod *rbmk_fuel_hep239 = new RBMKFuelRod("rbmk_fuel_hep239", "Highly Enriched Plutonium-239");
-    rbmk_fuel_hep239
+    RBMKFuelRod *rbmk_fuel_hep = new RBMKFuelRod("rbmk_fuel_hep", "Highly Enriched Plutonium-239");
+    rbmk_fuel_hep
         ->setYield(100000000)
         ->setStats(30)
         ->setFunction(BURNFUNC_LINEAR)
@@ -324,7 +327,7 @@ void RegisterFuels() {
     RegisterFuel("rbmk_fuel_thmeu", rbmk_fuel_thmeu);
     RegisterFuel("rbmk_fuel_lep", rbmk_fuel_lep);
     RegisterFuel("rbmk_fuel_mep", rbmk_fuel_mep);
-    RegisterFuel("rbmk_fuel_hep239", rbmk_fuel_hep239);
+    RegisterFuel("rbmk_fuel_hep", rbmk_fuel_hep);
     RegisterFuel("rbmk_fuel_hep241", rbmk_fuel_hep241);
     RegisterFuel("rbmk_fuel_lea", rbmk_fuel_lea);
     RegisterFuel("rbmk_fuel_mea", rbmk_fuel_mea);
@@ -357,4 +360,15 @@ RBMKFuelRod* PrepareFuel(std::string name) {
     RBMKFuelRod* fuel = new RBMKFuelRod(fuelRegistry[name]);
     fuel->active = true;
     return fuel;
+}
+
+auto GetFuelItems = [](){
+    std::vector<PickerItem> items;
+    for (const auto& pair : fuelRegistry) {
+        items.push_back({pair.second->internalName, pair.second->getTooltip(), pair.second->tex});
+    }
+    return items;
+};
+std::function<std::vector<PickerItem>()> GetFuelItemsLambda() {
+    return GetFuelItems;
 }

@@ -38,7 +38,7 @@ class RBMKFuelRod {
         double burn(double inFlux);
 
         void updateHeat(double mod);
-        double provideHeat(double heat, double mod);
+        double provideHeat(double m_heat, double mod);
 
         double reactivityFunc(double in, double enrichment);
         double reactivityModByEnrichment(double enrichment);
@@ -69,7 +69,7 @@ class RBMKFuelRod {
         RBMKFuelRod *setDepletionFunction(EnumDepleteFunc func);
 
         RBMKFuelRod *setXenon(double gen, double burn);
-        RBMKFuelRod *setHeat(double heat);
+        RBMKFuelRod *setHeat(double m_heat);
         RBMKFuelRod *setDiffusion(double diffusion);
         RBMKFuelRod *setMeltingPoint(double meltingPoint);
 
@@ -92,12 +92,12 @@ class RBMKFuelRod {
         EnumDepleteFunc depFunc = DEPFUNC_GENTLE_SLOPE;
 
         double xGen = 0.5;
-        double xBurn = 50;
-        double heat = 1;
+        double xBurn = 50.0;
+        double heat = 1.0;
 
         double yield;
         double meltingPoint = 1000;
-        double diffusion = 0.2;
+        double diffusion = 0.02;
 
         NType nType = NTYPE_SLOW;
         NType rType = NTYPE_FAST;

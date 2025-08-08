@@ -10,6 +10,12 @@
 #include "../../textureCache.h"
 #include "../dials.h"
 
+double rectify(double num) {
+    if(num > 1000000.0) num = 1000000.0;
+    if(num < 20.0 || isnan(num)) num = 20.0;
+    return num;
+}
+
 RBMKFuelRod::RBMKFuelRod(std::string m_internalName, std::string m_fullName) {
     internalName = m_internalName;
     fullName = m_fullName;
@@ -69,19 +75,14 @@ double RBMKFuelRod::burn(double inFlux) {
     }
 
     itemCoreHeat += outFlux * heat;
+    itemCoreHeat = rectify(itemCoreHeat);
 
     return outFlux;
 }
 
-double rectify(double num) {
-    if(num > 1000000.0) num = 1000000.0;
-    if(num < 20.0 || isnan(num)) num = 20.0;
-    return num;
-}
-
 void RBMKFuelRod::updateHeat(double mod) {
     if (itemCoreHeat > itemHullHeat) {
-        double mid = (itemCoreHeat - itemHullHeat) / 2;
+        double mid = (itemCoreHeat - itemHullHeat) / 2.0;
 
         itemCoreHeat -= mid * diffusion * rbmkDials.dialDiffusionMod * mod;
         itemHullHeat += mid * diffusion * rbmkDials.dialDiffusionMod * mod;
@@ -90,21 +91,22 @@ void RBMKFuelRod::updateHeat(double mod) {
         itemHullHeat = rectify(itemHullHeat);
     }
 }
-double RBMKFuelRod::provideHeat(double heat, double mod) {
+double RBMKFuelRod::provideHeat(double m_heat, double mod) {
     if (itemHullHeat > meltingPoint) {
-        double avg = (heat + itemHullHeat + itemCoreHeat) / 3.0;
+        double avg = (m_heat + itemHullHeat + itemCoreHeat) / 3.0;
         itemCoreHeat = avg;
         itemHullHeat = avg;
-        return avg - heat;
+        return avg - m_heat;
     }
 
-    if (itemHullHeat <= heat)
+    if (itemHullHeat <= m_heat)
         return 0.0;
 
-    double ret = (itemHullHeat - heat) / 2.0;
+    double ret = (itemHullHeat - m_heat) / 2.0;
     ret *= rbmkDials.dialHeatProvision * mod;
 
     itemHullHeat -= ret;
+
     return ret;
 }
 
@@ -117,13 +119,13 @@ double RBMKFuelRod::reactivityFunc(double in, double enrichment) {
         case BURNFUNC_PLATEU: return (1.0 - std::pow(math_euler, -flux / 25.0)) * reactivity;
         case BURNFUNC_ARCH: return std::max((flux - (flux * flux / 10000.0)) / 100.0 * reactivity, 0.0);
         case BURNFUNC_SIGMOID: return reactivity / (1.0 + std::pow(math_euler, -(flux - 50.0) / 10.0));
-        case BURNFUNC_SQUARE_ROOT: return std::sqrt(flux) * reactivity / 10;
+        case BURNFUNC_SQUARE_ROOT: return std::sqrt(flux) * reactivity / 10.0;
         case BURNFUNC_LINEAR: return flux / 100.0 * reactivity;
         case BURNFUNC_QUADRATIC: return flux * flux / 10000.0 * reactivity;
         case BURNFUNC_EXPERIMENTAL: return flux * (std::sin(flux) + 1.0) * reactivity;
     }
 
-    return 0;
+    return 0.0;
 }
 double RBMKFuelRod::reactivityModByEnrichment(double enrichment) {
     switch (depFunc) {
@@ -214,7 +216,7 @@ std::string RBMKFuelRod::getFuncDescription() {
             break;
     }
 
-    std::string selfRateStr = selfRate > 0 ? TextFormat("%.1f", selfRate) : "x";
+    std::string selfRateStr = selfRate > 0.0 ? TextFormat("%.1f", selfRate) : "x";
     std::string reactivityStr = TextFormat("%.1f", reactivity);
 
     double enrichment = getEnrichment();
@@ -238,8 +240,8 @@ std::string RBMKFuelRod::getTooltip() {
     // the fractional 1/2, small top 2 and infinity has to be regular characters instead
 
     if (internalName == "rbmk_fuel_drx") {
-        if (itemHullHeat >= 50 || itemCoreHeat >= 50) strs.push_back("Cool in a Spent Fuel Pool Drum");
-        if (selfRate > 0 || this->function == BURNFUNC_SIGMOID) strs.push_back("Self-combusting");
+        if (itemHullHeat >= 50.0 || itemCoreHeat >= 50.0) strs.push_back("Cool in a Spent Fuel Pool Drum");
+        if (selfRate > 0.0 || this->function == BURNFUNC_SIGMOID) strs.push_back("Self-combusting");
 
         // begins the big long list
         strs.push_back(TextFormat("Crustyness: %.3f%%", (1.0-getEnrichment())*100.0));
@@ -256,12 +258,12 @@ std::string RBMKFuelRod::getTooltip() {
         strs.push_back(TextFormat("Core entropy: %.1fm", itemCoreHeat));
         strs.push_back(TextFormat("Crush depth: %.1fm", meltingPoint));
     } else {
-        if (itemHullHeat >= 50 || itemCoreHeat >= 50) strs.push_back("Cool in a Spent Fuel Pool Drum");
-        if (selfRate > 0 || this->function == BURNFUNC_SIGMOID) strs.push_back("Self-igniting");
+        if (itemHullHeat >= 50.0 || itemCoreHeat >= 50.0) strs.push_back("Cool in a Spent Fuel Pool Drum");
+        if (selfRate > 0.0 || this->function == BURNFUNC_SIGMOID) strs.push_back("Self-igniting");
 
         // begins the big long list
         strs.push_back(TextFormat("Depletion: %.3f%%", (1.0-getEnrichment())*100.0));
-        strs.push_back(TextFormat("Xenon poison: %.3f%%", getPoisonLevel()*100.0f));
+        strs.push_back(TextFormat("Xenon poison: %.3f%%", getPoisonLevel()*100.0));
         strs.push_back(TextFormat("Splits with: %s", nTypeString(nType, false)));
         strs.push_back(TextFormat("Splits into: %s", nTypeString(rType, false)));
         strs.push_back(TextFormat("Flux function: %s", getFuncDescription().c_str()));
@@ -285,7 +287,7 @@ RBMKFuelRod *RBMKFuelRod::setYield(double yield) {
 }
 
 RBMKFuelRod *RBMKFuelRod::setStats(double funcEnd) {
-    return setStats(funcEnd, 0);
+    return setStats(funcEnd, 0.0);
 }
 RBMKFuelRod *RBMKFuelRod::setStats(double funcEnd, double selfRate) {
     this->reactivity = funcEnd;
@@ -307,8 +309,8 @@ RBMKFuelRod *RBMKFuelRod::setXenon(double gen, double burn) {
     this->xBurn = burn;
     return this;
 }
-RBMKFuelRod *RBMKFuelRod::setHeat(double heat) {
-    this->heat = heat;
+RBMKFuelRod *RBMKFuelRod::setHeat(double m_heat) {
+    this->heat = m_heat;
     return this;
 }
 RBMKFuelRod *RBMKFuelRod::setDiffusion(double diffusion) {

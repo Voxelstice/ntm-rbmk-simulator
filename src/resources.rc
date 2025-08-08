@@ -1,0 +1,23 @@
+GLFW_ICON ICON "../assets/icon.ico"
+
+1 VERSIONINFO
+FILEVERSION     1,0,0,0
+PRODUCTVERSION  1,0,0,0
+BEGIN
+  BLOCK "StringFileInfo"
+  BEGIN
+    BLOCK "040904E4"    // English US
+    BEGIN
+      VALUE "CompanyName", "Voxelstice"
+      VALUE "FileDescription", "NTM RBMK Simulator"
+      VALUE "FileVersion", "1.0.0.0"
+      VALUE "InternalName", "ntm-rbmk-simulator"
+      VALUE "ProductName", "NTM RBMK Simulator"
+      VALUE "ProductVersion", "1.0.0.0"
+    END
+  END
+  BLOCK "VarFileInfo"
+  BEGIN
+    VALUE "Translation", 0x409, 1252    // English US
+  END
+END

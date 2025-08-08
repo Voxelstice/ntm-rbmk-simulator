@@ -142,7 +142,7 @@ void RBMKBuilder::update() {
     if (submenuActive == true) {
         submenu->update();
 
-        if (IsKeyPressed(KEY_ESCAPE)) {
+        if (IsKeyPressed(KEY_ESCAPE) || IsKeyPressed(KEY_E)) {
             Audio_PlaySound(AUDIOSAMPLE_CLICK);
             submenu->close();
             submenuActive = false;
@@ -267,8 +267,8 @@ void RBMKBuilder::draw() {
     if (submenuActive == true) {
         DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), Fade(BLACK, 0.5f));
         submenu->draw();
-        TextDrawAlign(submenu->name.c_str(), {(float)GetScreenWidth()/2, (float)GetScreenHeight()/2 - (110*1.65f)}, 24.0f, BLACK, ALIGN_CENTER, ALIGN_MIDDLE);
-        TextDrawAlign("ESC to close", {(float)GetScreenWidth()/2, (float)GetScreenHeight() - 64}, 16.0f, WHITE, ALIGN_CENTER, ALIGN_MIDDLE);
+        TextDrawAlign(submenu->name.c_str(), {(float)GetScreenWidth()/2, (float)GetScreenHeight()/2 - (110*1.65f)}, 24.0f, {64, 64, 64, 255}, ALIGN_CENTER, ALIGN_MIDDLE);
+        TextDrawAlign("ESC or E to close", {(float)GetScreenWidth()/2, (float)GetScreenHeight() - 64}, 16.0f, WHITE, ALIGN_CENTER, ALIGN_MIDDLE);
     } else {
         if (selectorMode == true) {
             for (int i = 0; i < 15*15; i++) {            

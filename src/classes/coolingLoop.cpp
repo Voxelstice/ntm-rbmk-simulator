@@ -184,6 +184,7 @@ void CoolingLoop::update() {
     }
 
     // 3, steam is used, power is made, and steam is taken out of the turbine and to the next
+    long powerProduced = 0;
     int turbineCompressionCount = turbineCompression + 1;
     for (int i = 0; i < turbineCount; i++) {
         for (int i2 = 0; i2 < turbineCompressionCount; i2++) {
@@ -192,29 +193,88 @@ void CoolingLoop::update() {
             FluidTank* steamIn = turbines[i3];
             FluidTank* steamOut = turbines[i3+1];
 
-            int inputOps = steamIn->getFill();
+            FluidTrait_Coolable* trait = getTraitForFluid(steamIn->fluidType);
 
-            /*
-            		tanks[1].setTankType(trait.coolsTo);
-					int inputOps = tanks[0].getFill() / trait.amountReq;
-					int outputOps = (tanks[1].getMaxFill() - tanks[1].getFill()) / trait.amountProduced;
-					int cap = maxSteamPerTick / trait.amountReq;
-					int ops = Math.min(inputOps, Math.min(outputOps, cap));
-					tanks[0].setFill(tanks[0].getFill() - ops * trait.amountReq);
-					tanks[1].setFill(tanks[1].getFill() + ops * trait.amountProduced);
-					this.power += (ops * trait.heatEnergy * eff);
-					info[0] = ops * trait.amountReq;
-					info[1] = ops * trait.amountProduced;
-					info[2] = ops * trait.heatEnergy * eff;
-					valid = true;
-            */
+            steamOut->setTankType(trait->coolsTo);
+
+            int inputOps = steamIn->getFill() / trait->amountReq;
+            int outputOps = (steamOut->getMaxFill() - steamOut->getFill()) / trait->amountProduced;
+
+            // apparently this behavior DIFFERS between all 3 turbine types.
+            // we have to compensate for that.
+            int cap = 0;
+            if (turbineType == TURBINE_SMALL) {
+                cap = 6000 / trait->amountReq;
+            } else if (turbineType == TURBINE_INDUSTRIAL) {
+                cap = (int) std::ceil(steamIn->getFill() / trait->amountReq / 5.0);
+            }
+
+            int ops = 0;
+            if (cap == 0) {
+                ops = std::min(inputOps, outputOps);
+            } else {
+                ops = std::min(inputOps, std::min(outputOps, cap));
+            }
+
+            // efficiency.
+            double eff = 0.85;
+            if (turbineType == TURBINE_INDUSTRIAL) eff = 1;
+
+            // back to normal.
+            steamIn->setFill(steamIn->getFill() - ops * trait->amountReq);
+            steamOut->setFill(steamOut->getFill() + ops * trait->amountProduced);
+
+            long powerGen = ops * trait->heatEnergy * eff;
+            powerProduced += powerGen;
+
+            // i dont know what this is used for currently.
+            //info[0] = ops * trait.amountReq;
+			//info[1] = ops * trait.amountProduced;
+			//info[2] = ops * trait.heatEnergy * eff;
+
+            // are we done? i think we are
         }
     }
 
+    printf("power gen: %.2Lf MHE/s\n", powerProduced/50000.0);
+
     // 4, low pressure steam is transferred to the condensers
+    for (int i = 0; i < turbineCount; i++) {
+        for (int i2 = 0; i2 < turbineCompressionCount; i2++) {
+            FluidTank* steamOut = turbines[i + i2 + 1];
+
+        }
+    }
 
     // 5, condenser condenses low pressure steam to water.
 
     // 6, condenser water is transferred to water reservoirs.
 
+}
+
+// i hope this doesn't eat performance
+FluidTrait_Coolable* CoolingLoop::getTraitForFluid(FluidType type) {
+    FluidTrait_Coolable* trait = new FluidTrait_Coolable();
+    if (type == FLUID_STEAM) {
+        trait->coolsTo = FLUID_SPENTSTEAM;
+        trait->amountReq = 100;
+        trait->amountProduced = 1;
+        trait->heatEnergy = 200;
+    } else if (type == FLUID_HOTSTEAM) {
+        trait->coolsTo = FLUID_STEAM;
+        trait->amountReq = 1;
+        trait->amountProduced = 10;
+        trait->heatEnergy = 2;
+    } else if (type == FLUID_SUPERHOTSTEAM) {
+        trait->coolsTo = FLUID_HOTSTEAM;
+        trait->amountReq = 1;
+        trait->amountProduced = 10;
+        trait->heatEnergy = 18;
+    } else if (type == FLUID_ULTRAHOTSTEAM) {
+        trait->coolsTo = FLUID_SUPERHOTSTEAM;
+        trait->amountReq = 1;
+        trait->amountProduced = 10;
+        trait->heatEnergy = 120;
+    }
+    return trait;
 }

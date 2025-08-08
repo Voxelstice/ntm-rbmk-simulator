@@ -130,7 +130,7 @@ set(MAIN_HEADERS
             src/classes/columns/columnHeatExchanger.h
 )
 
-add_executable(${PROJECT_NAME} ${MAIN_HEADERS} ${MAIN_SOURCE})
+add_executable(${PROJECT_NAME} ${MAIN_HEADERS} ${MAIN_SOURCE} src/resources.rc)
 
 # Generate compile_commands.json
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)

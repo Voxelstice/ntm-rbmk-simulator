@@ -46,7 +46,9 @@ void NeutronStream::runStreamInteraction() {
     // god i do sure hope this doesn't cause problems
     ColumnFluxReceiver* originColumn = (ColumnFluxReceiver*) rbmk->getColumn(rbmk->indexFromPos(origin));
 
-    Vector2 lastPos = Vector2Zero();
+    std::vector<Vector2> nodes;
+    nodes.clear();
+
     for (int i = 0; i < fluxRange; i++) {
         if (fluxQuantity == 0) return;
 
@@ -61,14 +63,7 @@ void NeutronStream::runStreamInteraction() {
             continue;
         }
 
-        lastPos = pos;
-
-        // i don't trust c++ enough to do this
-        // but im doing it anyway
-        // if this causes segfaults feel free to yell
-
-        // this used to be a switch block
-        // now its just a if statement block
+        nodes.push_back(pos);
 
         if (column->type == COLUMN_MODERATOR || column->moderated == true) {
             moderatedCount++;
@@ -119,12 +114,19 @@ void NeutronStream::runStreamInteraction() {
         }
     }
 
-    ColumnBase* lastColumn = rbmk->getColumn(rbmk->indexFromPos(lastPos));
-    if (lastColumn->active == true && (lastColumn->type == COLUMN_CONTROL || lastColumn->type == COLUMN_CONTROL_AUTO)) {
-        ColumnControlRod* control = (ColumnControlRod*) lastColumn;
-        if (control->level > 0.0) {
-            fluxQuantity *= control->getMulti();
+    if (nodes.size() - 1 >= 0) {
+        Vector2 lastPos = nodes[nodes.size() - 1];
+        ColumnBase* lastColumn = rbmk->getColumn(rbmk->indexFromPos(lastPos));
+        if (lastColumn->active == true && (lastColumn->type == COLUMN_CONTROL || lastColumn->type == COLUMN_CONTROL_AUTO)) {
+            ColumnControlRod* control = (ColumnControlRod*) lastColumn;
+            if (control->getMulti() > 0.0) {
+                fluxQuantity *= control->getMulti();
+            }
         }
+    } else {
+        // no last node
+        rbmk->emitRadiation(fluxQuantity * 0.05);
+        return;
     }
 }
 void NeutronStream::moderateStream() {

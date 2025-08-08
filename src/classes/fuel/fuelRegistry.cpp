@@ -18,6 +18,8 @@ void RegisterFuel(std::string name, RBMKFuelRod* fuel) {
 void RegisterFuels() {
     TraceLog(LOG_INFO, "RBMK: Beginning fuel initialization");
 
+    // Fuel data probably accurate AS OF X5412H1
+
     RBMKFuelRod *rbmk_fuel_ueu = new RBMKFuelRod("rbmk_fuel_ueu", "Unenriched Uranium");
     rbmk_fuel_ueu
         ->setYield(100000000)

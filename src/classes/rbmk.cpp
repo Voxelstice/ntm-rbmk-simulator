@@ -74,15 +74,15 @@ void RBMK::update() {
         for (int i = 0; i < 15*15; i++) {
             if (columns[i]->active == false) continue;
 
-            if (columns[i]->doBaseUpdate == true) columns[i]->baseUpdate();
             columns[i]->update();
+            if (columns[i]->doBaseUpdate == true) columns[i]->baseUpdate();
 
             if (columns[i]->type == COLUMN_FUEL) {
                 ColumnFuelRod* rod = (ColumnFuelRod*) columns[i];
                 flux += rod->lastFluxQuantity;
             }
         }
-        //printf("%i\n", (int)flux);
+        printf("total flux: %.1f\n", flux);
 
         // update streams
         for (NeutronStream* stream : streams) {

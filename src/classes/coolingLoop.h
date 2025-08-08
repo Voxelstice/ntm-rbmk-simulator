@@ -32,6 +32,14 @@ enum ReservoirType { // water storage
     RESERVOIR_BIG,       // big ass tank (2048k mB)
 };
 
+// fluid trait bullshit
+typedef struct FluidTrait_Coolable {
+    FluidType coolsTo;
+    int amountReq;
+    int amountProduced;
+    int heatEnergy;
+} FluidTrait_Coolable;
+
 class CoolingLoop {
     public:
         CoolingLoop();
@@ -39,6 +47,8 @@ class CoolingLoop {
         void reconfigure();
         void reset();
         void update();
+
+        FluidTrait_Coolable* getTraitForFluid(FluidType type);
 
         // config
         int turbineCompression = 0;

@@ -49,10 +49,10 @@ void NeutronStream::runStreamInteraction() {
     std::vector<Vector2> nodes;
     nodes.clear();
 
-    for (int i = 0; i < fluxRange; i++) {
+    for (int i = 1; i <= fluxRange; i++) {
         if (fluxQuantity == 0) return;
 
-        Vector2 pos = Vector2Add(origin, Vector2Scale(vector, 1+(float)i));
+        Vector2 pos = Vector2Add(origin, Vector2Scale(vector, (float)i));
         ColumnBase* column = rbmk->getColumn(rbmk->indexFromPos(pos));
 
         // there's some code here that handles the blocking of the neutron stream via covering with blocks
@@ -96,7 +96,7 @@ void NeutronStream::runStreamInteraction() {
         } else if (column->type == COLUMN_REFLECTOR) {
             if (originColumn->moderated == true) moderatedCount++;
 
-            if (fluxRatio > 0 && moderatedCount > 0) {
+            if (fluxRatio > 0.0 && moderatedCount > 0) {
                 for (int i = 0; i < moderatedCount; i++)
                     moderateStream();
             }
@@ -106,10 +106,11 @@ void NeutronStream::runStreamInteraction() {
                 continue;
             }
 
-            originColumn->receiveFlux(this);
+            ColumnFuelRod* rod = (ColumnFuelRod*) originColumn;
+            rod->receiveFlux(this);
             return;
         } else if (column->type == COLUMN_ABSORBER) {
-            if(rbmkDials.dialAbsorberEfficiency == 1) return;
+            if(rbmkDials.dialAbsorberEfficiency == 1.0) return;
             fluxQuantity *= rbmkDials.dialAbsorberEfficiency;
         }
     }
@@ -126,7 +127,6 @@ void NeutronStream::runStreamInteraction() {
     } else {
         // no last node
         rbmk->emitRadiation(fluxQuantity * 0.05);
-        return;
     }
 }
 void NeutronStream::moderateStream() {

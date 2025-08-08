@@ -62,6 +62,7 @@ class ColumnBase {
 
         bool active = false;
         bool moderated = false;
+        bool doBaseUpdate = true;
         ColumnType type = COLUMN_NONE;
         ColumnColor col = COLUMNCOLOR_NONE;
 

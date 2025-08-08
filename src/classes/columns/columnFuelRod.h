@@ -21,6 +21,7 @@ class ColumnFuelRod : public ColumnFluxReceiver {
 
         // neutrons
         void receiveFlux(NeutronStream* stream);
+        void _receiveFlux();
         double fluxFromType(NType type);
         void spreadFlux(double flux, double ratio);
 
@@ -34,7 +35,9 @@ class ColumnFuelRod : public ColumnFluxReceiver {
         double lastFluxRatio = 0.0;
 
         bool hasRod = false;
+        bool doBaseUpdate = false;
 
         RBMKFuelRod* fuel;
         ItemSlot* itemSlot; // primarily just to store the item
+        std::vector<NeutronStream *> neutronStreams;
 };

@@ -67,6 +67,8 @@ void ColumnFuelRod::update() {
         fuel->updateHeat(1.0);
         heat += fuel->provideHeat(heat, 1.0);
 
+        baseUpdate();
+
         if (heat > maxHeat) {
             if (rbmkDials.dialDisableMeltdowns == false) {
                 rbmk->meltdown();
@@ -110,11 +112,17 @@ void ColumnFuelRod::reset() {
 
 // neutrons
 void ColumnFuelRod::receiveFlux(NeutronStream* stream) {
-    double fastFlux = fluxQuantity * fluxFastRatio;
-    double fastFluxIn = stream->fluxQuantity * stream->fluxRatio;
+    neutronStreams.push_back(stream);
+}
+void ColumnFuelRod::_receiveFlux() {
+    for (NeutronStream* stream : neutronStreams) {
+        double fastFlux = fluxQuantity * fluxFastRatio;
+        double fastFluxIn = stream->fluxQuantity * stream->fluxRatio;
 
-    fluxQuantity += stream->fluxQuantity;
-    fluxFastRatio = (fastFlux + fastFluxIn) / fluxQuantity;
+        fluxQuantity += stream->fluxQuantity;
+        fluxFastRatio = (fastFlux + fastFluxIn) / fluxQuantity;
+    }
+    neutronStreams.clear();
 }
 double ColumnFuelRod::fluxFromType(NType type) {
     double fastFlux = fluxQuantity * fluxFastRatio;

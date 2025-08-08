@@ -74,7 +74,7 @@ void RBMK::update() {
         for (int i = 0; i < 15*15; i++) {
             if (columns[i]->active == false) continue;
 
-            columns[i]->baseUpdate();
+            if (columns[i]->doBaseUpdate == true) columns[i]->baseUpdate();
             columns[i]->update();
 
             if (columns[i]->type == COLUMN_FUEL) {
@@ -88,6 +88,16 @@ void RBMK::update() {
         for (NeutronStream* stream : streams) {
             stream->runStreamInteraction();
         }
+
+        // update flux
+        for (int i = 0; i < 15*15; i++) {
+            if (columns[i]->active == false) continue;
+            if (columns[i]->type == COLUMN_FUEL) {
+                ColumnFuelRod* rod = (ColumnFuelRod*) columns[i];
+                rod->_receiveFlux();
+            }
+        }
+
         streams.clear();
     } else if (state == MELTED) {
 

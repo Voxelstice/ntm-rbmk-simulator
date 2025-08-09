@@ -171,8 +171,21 @@ void RBMKBuilder::update() {
             submenuActive = true;
         }
 
-        SetTooltipOnHover("Export", { (244+31)*4, 56*4, 40, 40 });
-        SetTooltipOnHover("Import", { (244+43)*4, 56*4, 40, 40 });
+        Rectangle exportRect = { (244+31)*4, 56*4, 40, 40 };
+        SetTooltipOnHover("Export", exportRect);
+        if (CheckCollisionPointRec(GetMousePosition(), exportRect) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+            Audio_PlaySound(AUDIOSAMPLE_CLICK);
+
+            rbmk->designExport();
+        }
+
+        Rectangle importRect = { (244+43)*4, 56*4, 40, 40 };
+        SetTooltipOnHover("Import", importRect);
+        if (CheckCollisionPointRec(GetMousePosition(), importRect) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+            Audio_PlaySound(AUDIOSAMPLE_CLICK);
+
+            rbmk->designImport();
+        }
 
         for (int y = 0; y < 4; y++) {
             for (int x = 0; x < 4; x++) {
@@ -187,6 +200,24 @@ void RBMKBuilder::update() {
                     }
                 }
             }
+        }
+    } else {
+        Rectangle aboutRect = { (244+7)*4, 8*4, 40, 40 };
+        SetTooltipOnHover("About NTM RBMK Simulator", aboutRect);
+        if (CheckCollisionPointRec(GetMousePosition(), aboutRect) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+            Audio_PlaySound(AUDIOSAMPLE_CLICK);
+
+            submenu = new SubmenuAbout();
+            submenuActive = true;
+        }
+
+        Rectangle coolingRect = { (244+19)*4, 8*4, 40, 40 };
+        SetTooltipOnHover("Cooling Loop", coolingRect);
+        if (CheckCollisionPointRec(GetMousePosition(), coolingRect) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+            Audio_PlaySound(AUDIOSAMPLE_CLICK);
+
+            submenu = new SubmenuCooling();
+            submenuActive = true;
         }
     }
 

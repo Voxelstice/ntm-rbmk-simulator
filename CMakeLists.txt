@@ -18,6 +18,7 @@ set(MAIN_SOURCE
 
     # libs
         src/libs/backward.cpp
+        src/libs/tinyfiledialogs.c
 
     # classes
         src/classes/dials.cpp
@@ -80,6 +81,7 @@ set(MAIN_HEADERS
     # libs
         src/libs/json.hpp
         src/libs/backward.hpp
+        src/libs/tinyfiledialogs.h
 
     # classes
         src/classes/dials.h

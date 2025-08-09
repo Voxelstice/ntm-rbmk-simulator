@@ -151,7 +151,7 @@ void CoolingLoop::update() {
     }
 
     // 1, reservoir water is made and transferred to the boilers
-    for (int i2 = 0; i2 < reservoirs.size(); i2++) {
+    for (int i2 = 0; i2 < reservoirCount; i2++) {
         // fill it with some water
         int waterFillRate = 50;
         if (reservoirFillWeight == RESERVOIRFILL_HEAVY) waterFillRate = 500;
@@ -243,13 +243,35 @@ void CoolingLoop::update() {
         for (int i2 = 0; i2 < turbineCompressionCount; i2++) {
             FluidTank* steamOut = turbines[i + i2 + 1];
 
+            int fluidToTransfer = (int)std::floor((float)steamOut->getFill() / (float)condenserCount);
+            for (int i2 = 0; i2 < condenserCount; i2++) {
+                int i3 = i2 * 2;
+                condensers[i3]->setFill(condensers[i3]->getFill() + fluidToTransfer);
+                steamOut->setFill(steamOut->getFill() - fluidToTransfer);
+            }
         }
     }
 
     // 5, condenser condenses low pressure steam to water.
+    for (int i = 0; i < condenserCount; i++) {
+        FluidTank* steamIn = condensers[i * 2];
+        FluidTank* waterOut = condensers[(i * 2)+1];
+
+        int convert = std::min(steamIn->getFill(), waterOut->getMaxFill() - waterOut->getFill());
+        steamIn->setFill(steamIn->getFill() - convert);
+        waterOut->setFill(waterOut->getFill() + convert);
+    }
 
     // 6, condenser water is transferred to water reservoirs.
+    for (int i = 0; i < condenserCount; i++) {
+        FluidTank* waterOut = condensers[(i * 2)+1];
 
+        int fluidToTransfer = (int)std::floor((float)waterOut->getFill() / (float)reservoirCount);
+        for (int i2 = 0; i2 < reservoirCount; i2++) {
+            reservoirs[i2]->setFill(reservoirs[i2]->getFill() + fluidToTransfer);
+            waterOut->setFill(waterOut->getFill() - fluidToTransfer);
+        }
+    }
 }
 
 // i hope this doesn't eat performance

@@ -28,7 +28,7 @@ enum ReservoirFillWeight { // infinite water
 };
 enum ReservoirType { // water storage
     RESERVOIR_SMALL,     // steel barrel (16k mB)
-    RESERVOIR_MEDIUM,    // tank (256k mB)
+    RESERVOIR_MEDIUM,    // tank         (256k mB)
     RESERVOIR_BIG,       // big ass tank (2048k mB)
 };
 

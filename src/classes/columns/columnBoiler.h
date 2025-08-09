@@ -18,6 +18,8 @@ class ColumnBoiler : public ColumnBase {
         // other
         std::vector<std::string> getInfo();
         void cycleCompressor();
+
+        void setCompressionLevel(int level);
         int getCompressionLevel();
 
         // vars

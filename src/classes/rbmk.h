@@ -49,6 +49,10 @@ class RBMK {
         Vector2 posFromIndex(int i);
         int indexFromPos(Vector2 pos);
 
+        // saving
+        void designExport();
+        void designImport();
+
         // vars
         RBMKState state = OFFLINE;
         std::vector<ColumnBase*> columns;

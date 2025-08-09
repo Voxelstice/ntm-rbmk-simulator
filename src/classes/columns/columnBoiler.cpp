@@ -122,6 +122,17 @@ void ColumnBoiler::cycleCompressor() {
         default:                    return steam->setTankType(FLUID_HOTSTEAM);
     }
 }
+
+void ColumnBoiler::setCompressionLevel(int level) {
+    switch (level) {
+        case 0:      return steam->setTankType(FLUID_STEAM);
+        case 1:      return steam->setTankType(FLUID_HOTSTEAM);
+        case 2:      return steam->setTankType(FLUID_SUPERHOTSTEAM);
+        case 3:      return steam->setTankType(FLUID_ULTRAHOTSTEAM);
+
+        default:     return steam->setTankType(FLUID_STEAM);
+    }
+}
 int ColumnBoiler::getCompressionLevel() {
     switch (steam->getTankType()) {
         case FLUID_STEAM:           return 0;

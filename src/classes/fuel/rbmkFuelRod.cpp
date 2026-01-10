@@ -12,7 +12,7 @@
 
 double rectify(double num) {
     if(num > 1000000.0) num = 1000000.0;
-    if(num < 20.0 || isnan(num)) num = 20.0;
+    if(num < 20.0 || std::isnan(num)) num = 20.0;
     return num;
 }
 

@@ -380,10 +380,10 @@ void RBMK::designImport() {
                     std::string version = "unknown";
 
                     if (json["version"] != NULL) version = ((std::string)json["version"]);
-                    else throw std::exception("\"version\" not found");
+                    else throw std::runtime_error("\"version\" not found");
 
-                    if (json["version"] == NULL) throw std::exception("\"data\" not found");
-                    if (json["rbmk"] == NULL) throw std::exception("\"rbmk\" not found");
+                    if (json["version"] == NULL) throw std::runtime_error("\"data\" not found");
+                    if (json["rbmk"] == NULL) throw std::runtime_error("\"rbmk\" not found");
 
                     if (version != "rbmk_2")
                         TraceLog(LOG_WARNING, "RBMK: Non-standard version (%s) for file %s, tread with caution", version, selection);
@@ -391,7 +391,7 @@ void RBMK::designImport() {
                     if ((int)json["rbmk"]["width"] != 15 || (int)json["rbmk"]["height"] != 15) {
                         int answer = tinyfd_messageBox("NTM RBMK Simulator", TextFormat("Non-standard RBMK size (%ix%i), import anyway?", (int)json["rbmk"]["width"], (int)json["rbmk"]["height"]), "yesno", "warning", 2);
                         if (answer == 0) {
-                            throw std::exception("Non-standard RBMK size, user refused to import");
+                            throw std::runtime_error("Non-standard RBMK size, user refused to import");
                         }
                     }
                     
@@ -451,7 +451,7 @@ void RBMK::designImport() {
                 } catch (const nlohmann::json::exception& err) {
                     TraceLog(LOG_ERROR, "RBMK: An error occurred parsing JSON data:\n%s", err.what());
                     tinyfd_messageBox("NTM RBMK Simulator", TextFormat("An error occurred parsing JSON data:\n%s", err.what()), "ok", "error", 0);
-                } catch (const std::exception& err) {
+                } catch (const std::runtime_error& err) {
                     TraceLog(LOG_ERROR, "RBMK: An error occurred parsing RBMK data:\n%s", err.what());
                     tinyfd_messageBox("NTM RBMK Simulator", TextFormat("An error occurred parsing RBMK data:\n%s", err.what()), "ok", "error", 0);
                 }

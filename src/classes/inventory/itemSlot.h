@@ -32,6 +32,7 @@ class ItemSlot {
         bool hasItem = false;
         Item* item;
 
+        bool canUsePicker = true;
         bool itemPicker = false;
         int itemPickerOffset = 0;
         std::vector<PickerItem> pickerItems;

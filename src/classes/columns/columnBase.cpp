@@ -35,8 +35,6 @@ void ColumnBase::baseUpdate() {
 
     if (rbmkDials.dialReasimBoilers == true)
         boilWater();
-
-    coolPassively();
 }
 
 void ColumnBase::baseReset() {
@@ -46,6 +44,11 @@ void ColumnBase::baseReset() {
 }
 
 // main stuff
+double ColumnBase::passiveCooling(int neighbors) {
+	double min = rbmkDials.dialPassiveCoolingInner;
+	double max = rbmkDials.dialPassiveCooling;
+	return min + (max - min) * ((4 - clamp_int(neighbors, 0, 4)) / 4.0);
+}
 void ColumnBase::boilWater() {
     if (heat < 100.0) return;
 
@@ -102,10 +105,11 @@ void ColumnBase::moveHeat() {
         water += rWater;
         steam += rSteam;
     }
-}
-void ColumnBase::coolPassively() {
-    heat -= rbmkDials.dialPassiveCooling;
 
+    coolPassively(members - 1);
+}
+void ColumnBase::coolPassively(int neighbors) {
+    heat -= passiveCooling(neighbors);
     if (heat < 20.0) heat = 20.0;
 }
 
@@ -114,6 +118,7 @@ void ColumnBase::init() { }
 void ColumnBase::update() { }
 void ColumnBase::draw(Vector2 columnSize, Vector2 destPos) { }
 void ColumnBase::reset() { }
+void ColumnBase::melt() { }
 
 std::vector<std::string> ColumnBase::getInfo() {
     std::vector<std::string> vector;

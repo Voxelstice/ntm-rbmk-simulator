@@ -161,4 +161,9 @@ if (EMSCRIPTEN)
     set(CMAKE_EXECUTABLE_SUFFIX ".html") # This line is used to set your executable to build with the emscripten html template so that you can directly open it.
 endif ()
 
-target_link_libraries(${PROJECT_NAME} raylib)
+if (WIN32)
+    target_link_libraries(${PROJECT_NAME} raylib)
+else() # assumes GNU/Linux and other unix systems. Only tested on GNU/Linux, no hope for Apple systems even though I have one to test it on.
+    add_compile_definitions(BACKWARD_HAS_DW=1)
+    target_link_libraries(${PROJECT_NAME} raylib dw)
+endif()

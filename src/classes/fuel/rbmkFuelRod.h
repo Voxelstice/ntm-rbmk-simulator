@@ -67,6 +67,7 @@ class RBMKFuelRod {
 
         RBMKFuelRod *setFunction(EnumBurnFunc func);
         RBMKFuelRod *setDepletionFunction(EnumDepleteFunc func);
+        RBMKFuelRod *setHeatCoeff(double start, double length);
 
         RBMKFuelRod *setXenon(double gen, double burn);
         RBMKFuelRod *setHeat(double m_heat);
@@ -101,6 +102,9 @@ class RBMKFuelRod {
 
         NType nType = NTYPE_SLOW;
         NType rType = NTYPE_FAST;
+
+        double heatCoeffStart = 0;
+        double heatCoeffLength = 0;
 
         // ITEM VARIABLES
         double itemYield = 0.0;

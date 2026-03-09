@@ -93,6 +93,7 @@
 #include <exception>
 #include <iterator>
 #include "../logger.h"
+#include "tinyfiledialogs.h"
 
 #if defined(BACKWARD_SYSTEM_LINUX)
 
@@ -4054,6 +4055,8 @@ private:
 
   template <typename ST>
   void print_stacktrace(ST &st, std::ostream &os, Colorize &colorize) {
+    Logger_writeToLog("\nAn unhandled exception has been detected. The stacktrace will be printed below:\n");
+
     print_header(os, st.thread_id());
     _resolver.load_stacktrace(st);
     if ( reverse ) {
@@ -4065,15 +4068,26 @@ private:
         print_trace(os, _resolver.resolve(st[trace_idx]), colorize);
       }
     }
+
+    Logger_writeToLog("Please make a GitHub issue (https://www.github.com/voxelstice/ntm-rbmk-simulator/issues/) and send the latest log file from the logs folder in the same place as the executable!!!!\n");
+    Logger_close();
+    tinyfd_messageBox("Unhandled Exception !!!!!!!!", "An unhandled exception has been detected. Please make a GitHub issue (https://www.github.com/voxelstice/ntm-rbmk-simulator/issues/) and send the latest log file from the logs folder in the same place as the executable!!!!", "ok", "error", 0);
   }
 
   template <typename IT>
   void print_stacktrace(IT begin, IT end, std::ostream &os, size_t thread_id,
                         Colorize &colorize) {
+    
+    Logger_writeToLog("\nAn unhandled exception has been detected. The stacktrace will be printed below:\n");
+
     print_header(os, thread_id);
     for (; begin != end; ++begin) {
       print_trace(os, *begin, colorize);
     }
+
+    Logger_writeToLog("Please make a GitHub issue (https://www.github.com/voxelstice/ntm-rbmk-simulator/issues/) and send the latest log file from the logs folder in the same place as the executable!!!!\n");
+    Logger_close();
+    tinyfd_messageBox("Unhandled Exception !!!!!!!!", "An unhandled exception has been detected. Please make a GitHub issue (https://www.github.com/voxelstice/ntm-rbmk-simulator/issues/) and send the latest log file from the logs folder in the same place as the executable!!!!", "ok", "error", 0);
   }
 
   void print_header(std::ostream &os, size_t thread_id) {
@@ -4491,7 +4505,7 @@ private:
     wchar_t* wmessage = new wchar_t[len];
     MultiByteToWideChar(CP_UTF8, 0, message.c_str(), -1, wmessage, len);
 
-    MessageBoxW(NULL, wmessage, L"Unhandled Exception", MB_OK | MB_ICONERROR);
+    MessageBoxW(NULL, wmessage, L"Unhandled Exception !!!!!!!!", MB_OK | MB_ICONERROR);
     delete[] wmessage;
 
     Logger_close();

@@ -4,7 +4,8 @@
 
 typedef struct RBMKDials {
     // ntm dials!
-    double dialPassiveCooling = 1.0;
+    double dialPassiveCoolingInner = 0.1;
+    double dialPassiveCooling = 2.5;
     double dialColumnHeatFlow = 0.2;
     double dialDiffusionMod = 1.0;
     double dialHeatProvision = 0.2;
@@ -25,6 +26,7 @@ typedef struct RBMKDials {
     double dialReflectorEfficiency = 1.0;
     bool dialDisableDepletion = false;
     bool dialDisableXenon = false;
+    double dialAbsorberHeatConversion = 0.05;
 
     // program vars
     bool varsEmbedded = false;

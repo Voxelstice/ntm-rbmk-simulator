@@ -5,13 +5,15 @@
 #include "submenuFuelRod.h"
 #include "../../utils.h"
 #include "../../textureCache.h"
+#include "../../tooltip.h"
 
 #include "../../main.h"
 #include "../columns/columnFuelRod.h"
 
 SubmenuFuelRod::SubmenuFuelRod(Vector2 m_columnPos) : Submenu(m_columnPos) {
     ui = TexCache_Get("assets/gui/gui_rbmk_element.png");
-    name = "RBMK Fuel Rod";
+    ui_util = TexCache_Get("assets/gui/gui_utility.png");
+    name = "RBMK Fuel Channel";
 }
 
 void SubmenuFuelRod::open() {}
@@ -42,6 +44,15 @@ void SubmenuFuelRod::draw() {
             // xenon
             int x = int(58.0f * column->fuel->getPoisonLevel());
             DrawTextureS(ui, {212, 58-(float)x}, {14, (float)x}, Vector2Add(guiPosition, {126, 82-(float)x}), {14, (float)x}, 4);
+
+            if (column->fuel->itemHullHeat > 1000) {
+                DrawTextureS(ui_util, {8, 16}, {16, 16}, Vector2Add(guiPosition, {-16, 20}), {16, 16}, 4); 
+                SetTooltipOnHover("Fuel skin temperature has exceeded 1,000 C,\nautoloaders can no longer cycle fuel!", {(guiPosition.x - 16)*4, (guiPosition.y + 20)*4, 16*4, 16*4});
+            }
+            if (column->fuel->itemHullHeat > 200) {
+                DrawTextureS(ui_util, {24, 16}, {16, 16}, Vector2Add(guiPosition, {-16, 36}), {16, 16}, 4);
+                SetTooltipOnHover("Fuel skin temperature has exceeded 200 C,\nfuel can no longer be removed by hand!", {(guiPosition.x - 16)*4, (guiPosition.y + 36)*4, 16*4, 16*4});
+            }
         }
 
         column->itemSlot->draw();

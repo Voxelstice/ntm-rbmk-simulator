@@ -47,12 +47,15 @@ class ColumnBase {
 
         virtual std::vector<std::string> getInfo();
 
+        double passiveCooling(int neighbors);
         void moveHeat();
         void boilWater();
-        void coolPassively();
+        void coolPassively(int neighbors);
 
         void baseReset();
         virtual void reset();
+
+        virtual void melt();
 
         // vars
         // its so tempting to use floats...

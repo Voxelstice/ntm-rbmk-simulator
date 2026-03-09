@@ -208,7 +208,15 @@ void RBMK::changeState(RBMKState newState) {
             columns[i]->init();
         }
     } else if (newState == MELTED) {
+        for (int i = 0; i < 15*15; i++) {
+            if (columns[i]->active == false) continue;
+            if (columns[i]->type == COLUMN_NONE) {
+                columns[i]->active = false;
+                continue;
+            }
 
+            columns[i]->melt();
+        }
     } else if (newState == OFFLINE) {
         for (int i = 0; i < 15*15; i++) {
             if (columns[i]->active == false) continue;
@@ -310,14 +318,6 @@ int RBMK::indexFromPos(Vector2 pos) {
 }
 
 // saving
-#define RBMKVS_MAGIC "rbmkvs03"
-#define RBMKVS_VERSION 1
-typedef struct RBMKVSHeader {
-    char magic[9];
-    uint8_t version;
-    uint32_t dataSize;
-} RBMKVSHeader;
-
 void RBMK::designExport() {
     const char* lFilterPatterns[1] = { "*.rbmkvs" }; // RBMK voxel sim
     const char* selection = tinyfd_saveFileDialog(
@@ -331,11 +331,7 @@ void RBMK::designExport() {
     std::ofstream file;
     file.open(selection, std::ios::binary);
 
-    RBMKVSHeader header = { RBMKVS_MAGIC };
-    header.version = RBMKVS_VERSION;
-    header.dataSize = 69420;
-
-    file.write(reinterpret_cast<const char*>(&header), sizeof(header));
+    file.write("hi", 2);
 
     file.close();
 
@@ -367,12 +363,8 @@ void RBMK::designImport() {
 
             file.close();
 
-            // get header
-            unsigned char* dataPtr = data; // idk why this is necessary
-            RBMKVSHeader* dataHeader = (RBMKVSHeader*)dataPtr;
-
             // we got the file. check its format.
-            if (memcmp(data, (unsigned char*)"{\"version\":\"rbmk_2\"", 19) == 0) {
+            if (memcmp(data, (unsigned char*)"{\"version\":\"rbmk_2\"", 19) == 0 || memcmp(data, (unsigned char*)"{\"version\":\"rbmk_3\"", 19) == 0) {
                 // we're using the web NTM RBMK Simulator save data
                 // so lets load json instead
                 try {
@@ -382,72 +374,76 @@ void RBMK::designImport() {
                     if (json["version"] != NULL) version = ((std::string)json["version"]);
                     else throw std::runtime_error("\"version\" not found");
 
-                    if (json["version"] == NULL) throw std::runtime_error("\"data\" not found");
+                    if (json["data"] == NULL) throw std::runtime_error("\"data\" not found");
                     if (json["rbmk"] == NULL) throw std::runtime_error("\"rbmk\" not found");
 
-                    if (version != "rbmk_2")
-                        TraceLog(LOG_WARNING, "RBMK: Non-standard version (%s) for file %s, tread with caution", version, selection);
+                    //if (version != "rbmk_2")
+                    //    TraceLog(LOG_WARNING, "RBMK: Non-standard version (%s) for file %s, tread with caution", version, selection);
 
-                    if ((int)json["rbmk"]["width"] != 15 || (int)json["rbmk"]["height"] != 15) {
-                        int answer = tinyfd_messageBox("NTM RBMK Simulator", TextFormat("Non-standard RBMK size (%ix%i), import anyway?", (int)json["rbmk"]["width"], (int)json["rbmk"]["height"]), "yesno", "warning", 2);
-                        if (answer == 0) {
-                            throw std::runtime_error("Non-standard RBMK size, user refused to import");
-                        }
-                    }
-                    
-                    // parse column data
-                    reset();
-                    int columnIndex = 0;
-                    for (auto& el : json["data"].items()) {
-                        auto column = el.value();
-                        if (!column["class"].is_null()) {
-                            std::string className = (std::string)column["class"];
-                            ColumnType type = COLUMN_NONE;
-
-                            // i apologize for this mess. but you kind of can't do switch block with std::string
-
-                            if (className == "blank")            type = COLUMN_BLANK;
-                            else if (className == "fuel")        type = COLUMN_FUEL;
-                            else if (className == "control")     type = COLUMN_CONTROL;
-                            else if (className == "controlauto") type = COLUMN_CONTROL_AUTO;
-                            else if (className == "boiler")      type = COLUMN_BOILER;
-                            else if (className == "moderator")   type = COLUMN_MODERATOR;
-                            else if (className == "absorber")    type = COLUMN_ABSORBER;
-                            else if (className == "reflector")   type = COLUMN_REFLECTOR;
-                            else if (className == "storage")     type = COLUMN_STORAGE;
-                            else if (className == "cooler")      type = COLUMN_COOLER;
-
-                            ColumnBase* newColumn = makeColumnFromType(type);
-                            ColumnBase* simColumn = placeColumn(posFromIndex(columnIndex), newColumn);
-
-                            // change some more variables
-                            if (column["variables"]["moderated"] == true) simColumn->moderated = true;
-                            
-                            if (type == COLUMN_BOILER) {
-                                ((ColumnBoiler*)simColumn)->setCompressionLevel((int)column["variables"]["steamType"]);
-                            } else if (type == COLUMN_FUEL) {
-                                ColumnFuelRod* rod = (ColumnFuelRod*) simColumn;
-
-                                std::string fuelConst = (std::string)column["variables"]["fuel"]["construct"];
-                                if (fuelConst != "NONE") {
-                                    std::string fuelInternal = "rbmk_fuel_" + fuelConst;
-                                    std::transform(fuelInternal.begin(), fuelInternal.end(), fuelInternal.begin(), [](unsigned char c){ return std::tolower(c); });
-
-                                    rod->fuel = PrepareFuel(fuelInternal);
-                                    rod->fuel->reset();
-
-                                    rod->itemSlot->setItem(new Item(rod->itemSlot->position, rod->fuel->internalName, rod->fuel->tex));
-                                    rod->itemSlot->item->setTooltip(rod->fuel->getTooltip());
-                                }
+                    if (version == "rbmk_2") {
+                        if ((int)json["rbmk"]["width"] != 15 || (int)json["rbmk"]["height"] != 15) {
+                            int answer = tinyfd_messageBox("NTM RBMK Simulator", TextFormat("Non-standard RBMK size (%ix%i), import anyway?", (int)json["rbmk"]["width"], (int)json["rbmk"]["height"]), "yesno", "warning", 2);
+                            if (answer == 0) {
+                                throw std::runtime_error("Non-standard RBMK size, user refused to import");
                             }
                         }
-                        columnIndex++;
+                        
+                        // parse column data
+                        reset();
+                        int columnIndex = 0;
+                        for (auto& el : json["data"].items()) {
+                            auto column = el.value();
+                            if (!column["class"].is_null()) {
+                                std::string className = (std::string)column["class"];
+                                ColumnType type = COLUMN_NONE;
+
+                                // i apologize for this mess. but you kind of can't do switch block with std::string
+
+                                if (className == "blank")            type = COLUMN_BLANK;
+                                else if (className == "fuel")        type = COLUMN_FUEL;
+                                else if (className == "control")     type = COLUMN_CONTROL;
+                                else if (className == "controlauto") type = COLUMN_CONTROL_AUTO;
+                                else if (className == "boiler")      type = COLUMN_BOILER;
+                                else if (className == "moderator")   type = COLUMN_MODERATOR;
+                                else if (className == "absorber")    type = COLUMN_ABSORBER;
+                                else if (className == "reflector")   type = COLUMN_REFLECTOR;
+                                else if (className == "storage")     type = COLUMN_STORAGE;
+                                else if (className == "cooler")      type = COLUMN_COOLER;
+
+                                ColumnBase* newColumn = makeColumnFromType(type);
+                                ColumnBase* simColumn = placeColumn(posFromIndex(columnIndex), newColumn);
+
+                                // change some more variables
+                                if (column["variables"]["moderated"] == true) simColumn->moderated = true;
+                                
+                                if (type == COLUMN_BOILER) {
+                                    ((ColumnBoiler*)simColumn)->setCompressionLevel((int)column["variables"]["steamType"]);
+                                } else if (type == COLUMN_FUEL) {
+                                    ColumnFuelRod* rod = (ColumnFuelRod*) simColumn;
+
+                                    std::string fuelConst = (std::string)column["variables"]["fuel"]["construct"];
+                                    if (fuelConst != "NONE") {
+                                        std::string fuelInternal = "rbmk_fuel_" + fuelConst;
+                                        std::transform(fuelInternal.begin(), fuelInternal.end(), fuelInternal.begin(), [](unsigned char c){ return std::tolower(c); });
+
+                                        rod->fuel = PrepareFuel(fuelInternal);
+                                        rod->fuel->reset();
+
+                                        rod->itemSlot->setItem(new Item(rod->itemSlot->position, rod->fuel->internalName, rod->fuel->tex));
+                                        rod->itemSlot->item->setTooltip(rod->fuel->getTooltip());
+                                    }
+                                }
+                            }
+                            columnIndex++;
+                        }
+
+                        // parse dials
+
+                        // done!
+                        tinyfd_messageBox("NTM RBMK Simulator", "Old RBMK data has been imported successfully, please check your fuels", "ok", "info", 0);
+                    } else if (version == "rbmk_3") {
+                        tinyfd_messageBox("NTM RBMK Simulator", "RBMK data has been imported successfully", "ok", "info", 0);
                     }
-
-                    // parse dials
-
-                    // done!
-                    tinyfd_messageBox("NTM RBMK Simulator", "Old RBMK data has been imported, please check your fuels", "ok", "info", 0);
                 } catch (const nlohmann::json::exception& err) {
                     TraceLog(LOG_ERROR, "RBMK: An error occurred parsing JSON data:\n%s", err.what());
                     tinyfd_messageBox("NTM RBMK Simulator", TextFormat("An error occurred parsing JSON data:\n%s", err.what()), "ok", "error", 0);
@@ -455,13 +451,6 @@ void RBMK::designImport() {
                     TraceLog(LOG_ERROR, "RBMK: An error occurred parsing RBMK data:\n%s", err.what());
                     tinyfd_messageBox("NTM RBMK Simulator", TextFormat("An error occurred parsing RBMK data:\n%s", err.what()), "ok", "error", 0);
                 }
-            } else if (memcmp(dataHeader->magic, RBMKVS_MAGIC, sizeof(RBMKVS_MAGIC)) == 0) {
-                if (dataHeader->version != RBMKVS_VERSION) {
-                    tinyfd_messageBox("NTM RBMK Simulator", TextFormat("Unsupported RBMKVS version (%i)", dataHeader->version), "ok", "error", 0);
-                    return;
-                }
-                // new format
-                printf("Correct! %i\n", dataHeader->dataSize);
             } else {
                 tinyfd_messageBox("NTM RBMK Simulator", TextFormat("Unknown format of file %s", selection), "ok", "error", 0);
             }

@@ -66,7 +66,16 @@ double RBMKFuelRod::burn(double inFlux) {
         if (itemXenon > 100.0) itemXenon = 100.0;
     }
 
-    double outFlux = reactivityFunc(inFlux, getEnrichment() * rbmkDials.dialReactivityMod);
+    double mult = 1;
+	if (heatCoeffStart != 0) {
+		if (itemCoreHeat >= heatCoeffStart) {
+			double prog = (itemCoreHeat - heatCoeffStart) / heatCoeffLength;
+            if(prog > 1) prog = 1;
+			mult = std::sin((prog * math_pi + math_pi) / 2);
+		}
+	}
+
+    double outFlux = reactivityFunc(inFlux, getEnrichment() * mult) * rbmkDials.dialReactivityMod;
 
     if (rbmkDials.dialDisableDepletion == false) {
         itemYield -= inFlux;
@@ -301,6 +310,11 @@ RBMKFuelRod *RBMKFuelRod::setFunction(EnumBurnFunc func) {
 }
 RBMKFuelRod *RBMKFuelRod::setDepletionFunction(EnumDepleteFunc func) {
     this->depFunc = func;
+    return this;
+}
+RBMKFuelRod *RBMKFuelRod::setHeatCoeff(double start, double length) {
+    this->heatCoeffStart = start;
+    this->heatCoeffLength = length;
     return this;
 }
 

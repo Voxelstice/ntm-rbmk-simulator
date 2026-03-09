@@ -111,11 +111,12 @@ void NeutronStream::runStreamInteraction() {
             return;
         } else if (column->type == COLUMN_ABSORBER) {
             if(rbmkDials.dialAbsorberEfficiency == 1.0) return;
+            column->heat += rbmkDials.dialAbsorberHeatConversion * fluxQuantity;
             fluxQuantity *= rbmkDials.dialAbsorberEfficiency;
         }
     }
 
-    if (nodes.size() - 1 >= 0) {
+    if (nodes.size() > 0) { // fuck you bro
         Vector2 lastPos = nodes[nodes.size() - 1];
         ColumnBase* lastColumn = rbmk->getColumn(rbmk->indexFromPos(lastPos));
         if (lastColumn->active == true && (lastColumn->type == COLUMN_CONTROL || lastColumn->type == COLUMN_CONTROL_AUTO)) {

@@ -7,6 +7,7 @@ extern double math_euler;
 extern double math_pi;
 
 double clamp_double(double value, double minimum, double maximum);
+int clamp_int(int value, int minimum, int maximum);
 std::vector<Vector2> getCardinalDirections();
 
 Vector2 Vector2Round(Vector2 vec, int div);

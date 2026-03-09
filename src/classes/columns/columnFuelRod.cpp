@@ -88,6 +88,8 @@ void ColumnFuelRod::update() {
 
         fluxQuantity = 0.0;
         fluxFastRatio = 0.0;
+
+        itemSlot->canUsePicker = fuel->itemHullHeat <= 200;
     } else {
         lastFluxRatio = 0.0;
         lastFluxQuantity = 0.0;
@@ -97,6 +99,8 @@ void ColumnFuelRod::update() {
         itemSlot->hasItem = false;
 
         baseUpdate();
+
+        itemSlot->canUsePicker = true;
     }
 }
 void ColumnFuelRod::draw(Vector2 columnSize, Vector2 destPos) {
@@ -115,6 +119,11 @@ void ColumnFuelRod::draw(Vector2 columnSize, Vector2 destPos) {
 }
 void ColumnFuelRod::reset() {
     fuel->reset();
+}
+void ColumnFuelRod::melt() { 
+    if (hasRod == true) {
+        itemSlot->canUsePicker = true;
+    }
 }
 
 // neutrons

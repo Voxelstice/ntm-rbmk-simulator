@@ -18,7 +18,8 @@ void RegisterFuel(std::string name, RBMKFuelRod* fuel) {
 void RegisterFuels() {
     TraceLog(LOG_INFO, "RBMK: Beginning fuel initialization");
 
-    // Fuel data probably accurate AS OF X5412H1
+    // Fuel data probably accurate AS OF X5628
+    // TODO: review all fuels again
 
     RBMKFuelRod *rbmk_fuel_ueu = new RBMKFuelRod("rbmk_fuel_ueu", "Unenriched Uranium");
     rbmk_fuel_ueu
@@ -56,6 +57,18 @@ void RegisterFuels() {
         ->setFunction(BURNFUNC_SQUARE_ROOT)
         ->setMeltingPoint(2865)
         ->setItemName("HEU-235 RBMK Rod");
+    
+    RBMKFuelRod *rbmk_fuel_uzh = new RBMKFuelRod("rbmk_fuel_uzh", "Uranium Zirconium Hydride");
+    rbmk_fuel_uzh
+		->setYield(50000000)
+		->setStats(30)
+		->setFunction(BURNFUNC_LOG_TEN)
+		->setDepletionFunction(DEPFUNC_GENTLE_SLOPE)
+		->setHeat(0.75)
+		->setHeatCoeff(1000, 500)
+		->setDiffusion(0.1)
+		->setMeltingPoint(1845)
+        ->setItemName("UZrH RBMK Fuel Rod");
 
     RBMKFuelRod *rbmk_fuel_thmeu = new RBMKFuelRod("rbmk_fuel_thmeu", "Thorium with MEU Driver Fuel");
     rbmk_fuel_thmeu
@@ -326,6 +339,7 @@ void RegisterFuels() {
     RegisterFuel("rbmk_fuel_meu", rbmk_fuel_meu);
     RegisterFuel("rbmk_fuel_heu233", rbmk_fuel_heu233);
     RegisterFuel("rbmk_fuel_heu235", rbmk_fuel_heu235);
+    RegisterFuel("rbmk_fuel_uzh", rbmk_fuel_uzh);
     RegisterFuel("rbmk_fuel_thmeu", rbmk_fuel_thmeu);
     RegisterFuel("rbmk_fuel_lep", rbmk_fuel_lep);
     RegisterFuel("rbmk_fuel_mep", rbmk_fuel_mep);

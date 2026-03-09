@@ -15,5 +15,6 @@ class Submenu {
         std::string name = "";
 
         Texture2D ui;
+        Texture2D ui_util;
         Vector2 columnPos;
 };

@@ -36,6 +36,7 @@ void ItemSlot::setGetItems(std::function<std::vector<PickerItem>()> newFunc) {
     getItems = newFunc;
 }
 void ItemSlot::setItemPicked(std::function<void(std::string)> newFunc) {
+    if (canUsePicker == false) return;
     itemPickedReady = true;
     itemPicked = newFunc;
 }
@@ -48,6 +49,9 @@ void ItemSlot::update() {
         Rectangle rect = {position.x, position.y, 16 * 4, 16 * 4};
         if (CheckCollisionPointRec(GetMousePosition(), rect) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
             Audio_PlaySound(AUDIOSAMPLE_CLICK);
+
+            if (canUsePicker == false) return;
+            
             itemPicker = true;
             itemPickerOffset = 0;
 
@@ -56,6 +60,12 @@ void ItemSlot::update() {
             }
         }
     } else {
+        if (canUsePicker == false) {
+            itemPicker = false;
+            pickerItems.clear();
+            return;
+        }
+
         Rectangle pickRect = {position.x - 16*4, position.y - 16*4, 48*4, 48*4};
 
         if (!CheckCollisionPointRec(GetMousePosition(), pickRect) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {

@@ -13,6 +13,9 @@ double math_pi = 3.14159; // raylib also defines PI, but im gonna define my own 
 double clamp_double(double value, double minimum, double maximum) {
     return std::min(std::max(value, minimum), maximum);
 }
+int clamp_int(int value, int minimum, int maximum) { // same as above. why??
+    return std::min(std::max(value, minimum), maximum);
+}
 
 std::vector<Vector2> getCardinalDirections() {
     std::vector<Vector2> vector;

@@ -18,6 +18,7 @@ class ColumnFuelRod : public ColumnFluxReceiver {
         void update();
         void draw(Vector2 columnSize, Vector2 destPos);
         void reset();
+        void melt();
 
         // neutrons
         void receiveFlux(NeutronStream* stream);
